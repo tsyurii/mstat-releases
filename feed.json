@@ -27,11 +27,11 @@
     }
   ],
   "app": {
-    "version": "1.5.0",
-    "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.5.0/mstat-1.5.0.apk",
-    "sha256": "08836f58f9dcfc9abfba9279c1f4a2f47042436d34f667f8a91e87d58de2bfdb",
-    "size": 54171439,
+    "version": "1.7.0",
+    "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.7.0/mstat-1.7.0.apk",
+    "sha256": "4c8ef6327bdbd420c699285bfe46fe8c516728733b57f212cf4f4d3df3767b2e",
+    "size": 54171543,
     "date": "2026-10-18",
-    "notes": "Checks for firmware and app updates online; experiment naming; pairing with the board's PIN."
+    "notes": "Safe-mode banner; evenly spaced sampling by default; never keeps a previous board's calibration."
   }
 }
