@@ -12,6 +12,18 @@
       "size": 287476,
       "date": "2026-10-18",
       "notes": "Encrypted link with the board's PIN, in-app updates with automatic rollback, ADC offset calibration at every run."
+    },
+    {
+      "version": "1.14.0",
+      "board": "mstat",
+      "hw": [
+        "1.2"
+      ],
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/fw-mstat-1.14.0/mstat-fw-mstat-1.14.0.zip",
+      "sha256": "360107b1b356f0f6f917727e84b1eed4e411060468f33b38bf6b4937c833a78c",
+      "size": 288114,
+      "date": "2026-10-18",
+      "notes": "Safe mode after repeated crashes; evenly spaced sampling by default (25 % less noise); fixed: CA with bursts ran 4 % fast."
     }
   ],
   "app": {
