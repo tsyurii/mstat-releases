@@ -1,0 +1,18 @@
+{
+  "format": 1,
+  "firmware": [
+    {
+      "version": "1.12.2",
+      "board": "mstat",
+      "hw": [
+        "1.2"
+      ],
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/fw-mstat-1.12.2/mstat-fw-mstat-1.12.2.zip",
+      "sha256": "95db926439d95fd999402322091b3f3874b1985b629bd2c44dacd6d6c966ff5f",
+      "size": 287476,
+      "date": "2026-10-18",
+      "notes": "Encrypted link with the board's PIN, in-app updates with automatic rollback, ADC offset calibration at every run."
+    }
+  ],
+  "app": null
+}
