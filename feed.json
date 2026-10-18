@@ -27,11 +27,11 @@
     }
   ],
   "app": {
-    "version": "1.7.0",
-    "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.7.0/mstat-1.7.0.apk",
-    "sha256": "4c8ef6327bdbd420c699285bfe46fe8c516728733b57f212cf4f4d3df3767b2e",
-    "size": 54171543,
+    "version": "1.7.1",
+    "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.7.1/mstat-1.7.1.apk",
+    "sha256": "fca9ddb82be1cebadcc8ddace627391a6bfaa8a3064e68eec00ddac0913c5a73",
+    "size": 54171547,
     "date": "2026-10-18",
-    "notes": "Safe-mode banner; evenly spaced sampling by default; never keeps a previous board's calibration."
+    "notes": "Evenly spaced sampling is the default (lower noise, exact timing); safe-mode banner; never keeps a previous board's calibration."
   }
 }
