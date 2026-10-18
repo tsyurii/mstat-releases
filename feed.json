@@ -14,5 +14,12 @@
       "notes": "Encrypted link with the board's PIN, in-app updates with automatic rollback, ADC offset calibration at every run."
     }
   ],
-  "app": null
+  "app": {
+    "version": "1.5.0",
+    "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.5.0/mstat-1.5.0.apk",
+    "sha256": "08836f58f9dcfc9abfba9279c1f4a2f47042436d34f667f8a91e87d58de2bfdb",
+    "size": 54171439,
+    "date": "2026-10-18",
+    "notes": "Checks for firmware and app updates online; experiment naming; pairing with the board's PIN."
+  }
 }
