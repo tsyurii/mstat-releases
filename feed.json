@@ -27,11 +27,11 @@
     }
   ],
   "app": {
-    "version": "1.7.1",
-    "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.7.1/mstat-1.7.1.apk",
-    "sha256": "fca9ddb82be1cebadcc8ddace627391a6bfaa8a3064e68eec00ddac0913c5a73",
-    "size": 54171547,
+    "version": "1.8.0",
+    "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.8.0/mstat-1.8.0.apk",
+    "sha256": "a5f09f62d01a0845835375a9b074e69a184a75ed218bb0c6fdc491938239c97a",
+    "size": 54171551,
     "date": "2026-10-18",
-    "notes": "Evenly spaced sampling is the default (lower noise, exact timing); safe-mode banner; never keeps a previous board's calibration."
+    "notes": "Permanent app identity and release signing. If an older MSTAT app (1.7.1 or earlier) is installed: install this one, check it connects, then uninstall the old one. Exports in Download/MSTAT and Bluetooth pairings are kept."
   }
 }
