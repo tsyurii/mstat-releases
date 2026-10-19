@@ -62,12 +62,12 @@
       }
     ],
     "app": {
-      "version": "1.19.4",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.19.4/mstat-1.19.4.apk",
-      "sha256": "e35734d753d09ff6eff88529a915369b71b0e55997edcac1170605296f13b890",
-      "size": 57170691,
+      "version": "1.20.0",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.20.0/mstat-1.20.0.apk",
+      "sha256": "9bb55f3ae0626bd90daa4bdc97fca3a4fa1684084d8816256dbcc362ed257830",
+      "size": 57269083,
       "date": "2026-10-19",
-      "notes": "Connection errors in plain words: 'the board may be connected to another tablet or phone' instead of Android code 133."
+      "notes": "Runs of a session stay on the plot together (repeats and runs one after another); several columns at once (SWV forward + reverse + difference); Save/Share figure (PNG); methods saved to Download/MSTAT/methods; tap a legend name to hide a curve."
     }
   }
 }
