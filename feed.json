@@ -27,12 +27,12 @@
     }
   ],
   "app": {
-    "version": "1.20.0",
-    "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.20.0/mstat-1.20.0.apk",
-    "sha256": "9bb55f3ae0626bd90daa4bdc97fca3a4fa1684084d8816256dbcc362ed257830",
+    "version": "1.20.1",
+    "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.20.1/mstat-1.20.1.apk",
+    "sha256": "4a203624a25c1834bd6576435a4a235e88dffbba6db86b1348b53733185486fb",
     "size": 57269083,
     "date": "2026-10-19",
-    "notes": "Runs of a session stay on the plot together (repeats and runs one after another); several columns at once (SWV forward + reverse + difference); Save/Share figure (PNG); methods saved to Download/MSTAT/methods; tap a legend name to hide a curve."
+    "notes": "Tap or drag on the plot to read the values: the potential/time there and each curve's value in its colour."
   },
   "beta": {
     "firmware": [
@@ -61,13 +61,6 @@
         "notes": "Board log over BLE: the board's own messages, kept across a crash, readable in the app (Device -> Board log, app >= 1.19.0) and included in every problem report."
       }
     ],
-    "app": {
-      "version": "1.20.1",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.20.1/mstat-1.20.1.apk",
-      "sha256": "4a203624a25c1834bd6576435a4a235e88dffbba6db86b1348b53733185486fb",
-      "size": 57269083,
-      "date": "2026-10-19",
-      "notes": "Tap or drag on the plot to read the values: the potential/time there and each curve's value in its colour."
-    }
+    "app": null
   }
 }
