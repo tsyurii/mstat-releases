@@ -50,12 +50,12 @@
       }
     ],
     "app": {
-      "version": "1.17.0",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.17.0/mstat-1.17.0.apk",
-      "sha256": "d9487a04307d50f2d2e076be335776c417fb36b889fbaf7490d66f7ee3d4a38e",
-      "size": 56875727,
+      "version": "1.18.1",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.18.1/mstat-1.18.1.apk",
+      "sha256": "3e401203cc6a2be6ceca72d69565eb987a0d81fe2d2b0648fa496146dea027ab",
+      "size": 57088715,
       "date": "2026-10-19",
-      "notes": "1.17.0 beta: unified Run screen, automatic saving, release channels, Report a problem, methods sheet."
+      "notes": "Lab dashboard: Device -> Lab dashboard to sign in (code from the lab). While signed in, the tablet sends each board's health at connect and after runs, and problem reports go to the lab automatically. Nothing is sent while signed out; never the PIN."
     }
   }
 }
