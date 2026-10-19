@@ -71,8 +71,14 @@ ol { padding-left: 20px; margin: 6px 0 0; font-size: 14px; }
 </main>
 <script>
 const MB = (n) => n ? ` · ${(n / 1048576).toFixed(0)} MB` : '';
-fetch('../feed.json', { cache: 'no-store' })
-  .then((r) => r.json())
+// The GitHub API is current the moment a release is published; the Pages
+// copy (../feed.json) is cached for up to 10 minutes, so it is the fallback.
+const fromApi = () => fetch(
+  'https://api.github.com/repos/tsyurii/mstat-releases/contents/feed.json',
+  { headers: { Accept: 'application/vnd.github.raw+json' }, cache: 'no-store' },
+).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
+const fromPages = () => fetch('../feed.json', { cache: 'no-store' }).then((r) => r.json());
+fromApi().catch(fromPages)
   .then((f) => {
     const set = (id, app) => {
       if (!app || !app.url) {
