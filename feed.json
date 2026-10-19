@@ -62,12 +62,12 @@
       }
     ],
     "app": {
-      "version": "1.19.2",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.19.2/mstat-1.19.2.apk",
-      "sha256": "f153ea30b08baa276e055e247559ba42fcc17c1c60c3d153efd2336f6adca10f",
-      "size": 57170691,
+      "version": "1.19.3",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.19.3/mstat-1.19.3.apk",
+      "sha256": "63db7bca9574c7c298edc762a430cc685d0ccd6b75480b326e6941aebfd04df8",
+      "size": 57170695,
       "date": "2026-10-19",
-      "notes": "Fixes: each board keeps its own zero on the tablet; no previous board's details while connecting to another; events for a board registered while the tablet was offline are queued; offline shown on the dashboard card."
+      "notes": "Lab dashboard sign-in: 'I have a code' to type a code you already received; a clear message when a code was requested less than a minute ago."
     }
   }
 }
