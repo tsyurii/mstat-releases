@@ -33,5 +33,22 @@
     "size": 54171551,
     "date": "2026-10-18",
     "notes": "Permanent app identity and release signing. If an older MSTAT app (1.7.1 or earlier) is installed: install this one, check it connects, then uninstall the old one. Exports in Download/MSTAT and Bluetooth pairings are kept."
+  },
+  "beta": {
+    "firmware": [
+      {
+        "version": "1.17.0",
+        "board": "mstat",
+        "hw": [
+          "1.2"
+        ],
+        "url": "https://github.com/tsyurii/mstat-releases/releases/download/fw-mstat-1.17.0/mstat-fw-mstat-1.17.0.zip",
+        "sha256": "ac9eee92857a8820fbe865a403d47108a9e75a73806cb252e8c04821279957d2",
+        "size": 291876,
+        "date": "2026-10-19",
+        "notes": "1.17.0 beta: a run survives a dropped Bluetooth link (journal + resume); health record; SWV clip flags (1.16.0)."
+      }
+    ],
+    "app": null
   }
 }
