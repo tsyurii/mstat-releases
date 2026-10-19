@@ -61,6 +61,13 @@
         "notes": "Board log over BLE: the board's own messages, kept across a crash, readable in the app (Device -> Board log, app >= 1.19.0) and included in every problem report."
       }
     ],
-    "app": null
+    "app": {
+      "version": "1.20.1",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.20.1/mstat-1.20.1.apk",
+      "sha256": "4a203624a25c1834bd6576435a4a235e88dffbba6db86b1348b53733185486fb",
+      "size": 57269083,
+      "date": "2026-10-19",
+      "notes": "Tap or drag on the plot to read the values: the potential/time there and each curve's value in its colour."
+    }
   }
 }
