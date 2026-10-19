@@ -106,6 +106,14 @@ function ago(t) {
   const cls = s > STALE_DAYS * 86400 ? 'warn' : '';
   return `<span class="${cls}" title="${esc(new Date(t).toLocaleString())}">${txt}</span>`;
 }
+// "V1.2 · 20 kΩ ±45 µA": the hardware revision and the fitted gain resistor
+// with its current range (0.9 V across R_TIA).
+function hardware(b) {
+  const parts = [];
+  if (b.hw) parts.push(`V${esc(b.hw)}`);
+  if (b.rtia_kohm) parts.push(`${+b.rtia_kohm} kΩ <span class="muted">±${+(900 / b.rtia_kohm).toPrecision(3)} µA</span>`);
+  return parts.join(' · ') || '<span class="muted">?</span>';
+}
 const when = (t) => t ? esc(new Date(t).toLocaleString()) : '';
 
 let state = { user: null, staff: false, boards: [], reports: [], orgs: [], alerts: [] };
@@ -197,13 +205,13 @@ function render() {
         ${state.staff ? `<td><button class="ghost" data-alert="${x.id}">Close</button></td>` : ''}</tr>`).join('')}
     </table></div><p class="muted" style="margin:8px 0 0">Alerts close by themselves when the cause goes away.</p></div>` : ''}
     <div class="card"><h2>Boards <span class="n">${bs.length}</span></h2><div class="scroll"><table>
-      <tr><th>Board</th><th>Organisation</th><th>Firmware</th><th>App</th><th>Last seen</th><th>Runs</th><th>Status</th></tr>
+      <tr><th>Board</th><th>Organisation</th><th>Hardware</th><th>Firmware</th><th>App</th><th>Last seen</th><th>Runs</th><th>Status</th></tr>
       ${bs.map((b) => `<tr class="click" data-serial="${esc(b.serial)}">
         <td><b>${esc(b.name || '(unnamed)')}</b><br><span class="mono muted">${esc(b.serial)}</span></td>
-        <td>${esc(b.org || '—')}</td><td class="mono">${esc(b.fw_version || '')}</td>
+        <td>${esc(b.org || '—')}</td><td>${hardware(b)}</td><td class="mono">${esc(b.fw_version || '')}</td>
         <td class="mono">${esc(b.app_version || '')}</td><td>${ago(b.last_seen)}</td>
         <td class="mono">${b.runs ?? ''}</td><td>${flags(b)}</td></tr>`).join('') ||
-        '<tr><td colspan="7" class="muted">No boards yet.</td></tr>'}
+        '<tr><td colspan="8" class="muted">No boards yet.</td></tr>'}
     </table></div></div>
     <div class="card"><h2>Problem reports <span class="n">${rs.length}</span></h2><div class="scroll"><table>
       <tr><th>When</th><th>Board</th>${state.staff ? '<th>Organisation</th>' : ''}<th>Note</th><th>Versions</th><th>Status</th><th></th></tr>
@@ -258,7 +266,7 @@ async function openBoard(serial) {
     <div class="kv">
       <div>Serial</div><div class="mono">${esc(serial)}</div>
       <div>Organisation</div><div>${esc(b.org || '—')}</div>
-      <div>Hardware</div><div>${esc(b.hw || '')}</div>
+      <div>Hardware</div><div>${hardware(b)}</div>
       <div>Firmware / app</div><div class="mono">${esc(b.fw_version || '?')} / ${esc(b.app_version || '?')}</div>
       <div>Provisioned</div><div>${when(b.provisioned_at)}</div>
       <div>Last seen</div><div>${ago(b.last_seen)}</div>
