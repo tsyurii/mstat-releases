@@ -62,12 +62,12 @@
       }
     ],
     "app": {
-      "version": "1.18.2",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.18.2/mstat-1.18.2.apk",
-      "sha256": "b7953ac74f11e4674d247cf831a42d81a59a55276aa2522a19bbd0b987335066",
-      "size": 57088715,
+      "version": "1.19.0",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.19.0/mstat-1.19.0.apk",
+      "sha256": "f695aa52055b0770f44d848eb595ff65c82fbfc078d3aa24f873e4f0d274f050",
+      "size": 57170695,
       "date": "2026-10-19",
-      "notes": "Heartbeat carries the fitted gain resistor (dashboard shows hardware and current range); heartbeat at sign-in and on Send now."
+      "notes": "Board log (Device -> Board log; firmware 1.18.0): the board's own recent messages, kept across a crash, shareable, and attached to every problem report."
     }
   }
 }
