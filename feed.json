@@ -47,6 +47,18 @@
         "size": 291876,
         "date": "2026-10-19",
         "notes": "1.17.0 beta: a run survives a dropped Bluetooth link (journal + resume); health record; SWV clip flags (1.16.0)."
+      },
+      {
+        "version": "1.18.0",
+        "board": "mstat",
+        "hw": [
+          "1.2"
+        ],
+        "url": "https://github.com/tsyurii/mstat-releases/releases/download/fw-mstat-1.18.0/mstat-fw-mstat-1.18.0.zip",
+        "sha256": "6d52f8dd68ab8d89a09420df3e8d89366bdbc3b4fcecd4240bcc544f642cebfc",
+        "size": 292836,
+        "date": "2026-10-19",
+        "notes": "Board log over BLE: the board's own messages, kept across a crash, readable in the app (Device -> Board log, app >= 1.19.0) and included in every problem report."
       }
     ],
     "app": {
