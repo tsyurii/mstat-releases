@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get MSTAT</title>
+<!-- The page the app-download QR code opens. It reads the release feed
+     (../feed.json) so the QR code never changes: it always offers the
+     current lab (beta) and stable apps. -->
+<style>
+:root { --bg: #f6f7f9; --card: #fff; --text: #1b1f24; --muted: #5d6673; --line: #e2e5ea;
+  --accent: #0b6bcb; --warn: #b26a00; color-scheme: light; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #0f1216; --card: #171b21; --text: #e6e9ee;
+    --muted: #9aa4b1; --line: #2a3039; --accent: #5aa9ff; --warn: #e0a040; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #0f1216; --card: #171b21; --text: #e6e9ee;
+  --muted: #9aa4b1; --line: #2a3039; --accent: #5aa9ff; --warn: #e0a040; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 560px; margin: 0 auto; padding: 24px 16px 40px; }
+h1 { font-size: 26px; margin: 0 0 4px; }
+.sub { color: var(--muted); margin: 0 0 20px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 16px; margin-bottom: 14px; }
+.card h2 { font-size: 17px; margin: 0 0 4px; }
+.card p { margin: 4px 0 12px; color: var(--muted); font-size: 14px; }
+a.btn { display: block; text-align: center; background: var(--accent); color: #fff;
+  text-decoration: none; padding: 13px; border-radius: 10px; font-weight: 600; }
+a.btn.ghost { background: transparent; color: var(--accent); border: 1px solid var(--line); }
+.v { font-family: ui-monospace, Menlo, monospace; font-size: 13px; color: var(--muted); }
+ol { padding-left: 20px; margin: 6px 0 0; font-size: 14px; }
+.warn { color: var(--warn); font-weight: 600; font-size: 14px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>MSTAT</h1>
+  <p class="sub">Wireless potentiostat · KAUST Sensors Lab · Android app</p>
+
+  <div class="card">
+    <h2>Lab members (beta)</h2>
+    <p>The version the lab uses, with the newest fixes. <span class="v" id="beta-v">…</span></p>
+    <a class="btn" id="beta" href="#">Download</a>
+  </div>
+
+  <div class="card">
+    <h2>Stable</h2>
+    <p>Released after the lab has tested it. <span class="v" id="stable-v">…</span></p>
+    <a class="btn ghost" id="stable" href="#">Download</a>
+  </div>
+
+  <div class="card">
+    <h2>Installing</h2>
+    <ol>
+      <li>Tap Download, then open the file. Allow installs from the browser when Android asks.</li>
+      <li>Open MSTAT, allow Bluetooth.</li>
+      <li>Lab tablets: Device → Firmware update → <b>Beta (lab)</b>.</li>
+      <li>Connect a board: the PIN is on its sticker.</li>
+    </ol>
+    <p class="warn" style="margin-top:12px">Never connect USB to a V1.2 board: battery only.</p>
+  </div>
+
+  <div class="card">
+    <h2>Lab dashboard</h2>
+    <p>Boards, health and problem reports (for invited accounts).</p>
+    <a class="btn ghost" href="../dashboard/">Open the dashboard</a>
+  </div>
+</main>
+<script>
+const MB = (n) => n ? ` · ${(n / 1048576).toFixed(0)} MB` : '';
+fetch('../feed.json', { cache: 'no-store' })
+  .then((r) => r.json())
+  .then((f) => {
+    const set = (id, app) => {
+      if (!app || !app.url) {
+        document.getElementById(id).style.display = 'none';
+        document.getElementById(id + '-v').textContent = 'not available';
+        return;
+      }
+      document.getElementById(id).href = app.url;
+      document.getElementById(id + '-v').textContent = `version ${app.version}${MB(app.size)}`;
+    };
+    set('beta', (f.beta && f.beta.app) || f.app);
+    set('stable', f.app);
+  })
+  .catch(() => {
+    for (const id of ['beta', 'stable']) {
+      document.getElementById(id + '-v').textContent = 'could not read the release list';
+      document.getElementById(id).href = 'https://github.com/tsyurii/mstat-releases/releases';
+    }
+  });
+</script>
+</body>
+</html>
