@@ -8,10 +8,12 @@ Sensors Lab). This repository holds **release files only** - no source code.
 <img src="qr-install-app.png" alt="QR code: download the MSTAT app" width="200">
 
 Scan the QR code with the tablet's camera, or open
-**https://github.com/tsyurii/mstat-releases/releases/latest/download/modustat.apk**
-in Chrome on the tablet.
+**https://tsyurii.github.io/mstat-releases/app/** on the tablet or phone.
+The page always offers the current app: **Lab members (beta)** for the lab,
+**Stable** for everyone else.
 
-1. **Download.** The file `modustat.apk` downloads (about 55 MB).
+1. **Download.** Tap **Download** under your channel; the `.apk` file downloads (about 55 MB).
+   If the browser warns that the file may be harmful, choose **Download anyway**.
 2. **Allow the install (once per device).** Tap the downloaded file. Android
    says installing from this source is blocked: tap **Settings**, turn on
    **Allow from this source** for Chrome (or your browser), go back and tap
