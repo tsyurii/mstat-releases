@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Device Fleet</title>
+<!-- Static page: everything it shows comes from Supabase with the signed-in
+     user's rights (row-level security). The publishable key is public. -->
+<style>
+:root {
+  --bg: #f6f7f9; --card: #fff; --text: #1b1f24; --muted: #5d6673; --line: #e2e5ea;
+  --accent: #0b6bcb; --ok: #1a7f37; --warn: #b26a00; --bad: #c62828; --chip: #eef1f5;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1216; --card: #171b21; --text: #e6e9ee; --muted: #9aa4b1; --line: #2a3039;
+    --accent: #5aa9ff; --ok: #4cc26b; --warn: #e0a040; --bad: #ff6b6b; --chip: #222832;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1216; --card: #171b21; --text: #e6e9ee; --muted: #9aa4b1; --line: #2a3039;
+  --accent: #5aa9ff; --ok: #4cc26b; --warn: #e0a040; --bad: #ff6b6b; --chip: #222832;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+header { display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+  border-bottom: 1px solid var(--line); background: var(--card); position: sticky; top: 0; z-index: 2; }
+header h1 { font-size: 17px; margin: 0; }
+header .who { margin-left: auto; color: var(--muted); font-size: 13px; }
+main { max-width: 1200px; margin: 0 auto; padding: 16px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+  padding: 16px; margin-bottom: 16px; }
+.card h2 { font-size: 15px; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+.card h2 .n { color: var(--muted); font-weight: 400; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.stat { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.stat b { display: block; font-size: 22px; }
+.stat span { color: var(--muted); font-size: 12px; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 640px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 500; font-size: 12px; white-space: nowrap; }
+tr.click { cursor: pointer; } tr.click:hover td { background: var(--chip); }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+.muted { color: var(--muted); }
+.chip { display: inline-block; padding: 1px 8px; border-radius: 99px; background: var(--chip);
+  font-size: 12px; margin: 0 4px 2px 0; white-space: nowrap; }
+.ok { color: var(--ok); } .warn { color: var(--warn); } .bad { color: var(--bad); }
+.chip.bad { background: color-mix(in srgb, var(--bad) 15%, transparent); color: var(--bad); }
+.chip.warn { background: color-mix(in srgb, var(--warn) 18%, transparent); color: var(--warn); }
+.chip.ok { background: color-mix(in srgb, var(--ok) 15%, transparent); color: var(--ok); }
+button, select, input { font: inherit; color: inherit; }
+button { background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: 8px 14px; cursor: pointer; }
+button.ghost { background: transparent; color: var(--accent); border: 1px solid var(--line); }
+button:disabled { opacity: .5; cursor: default; }
+input, select { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+input { width: 100%; }
+.signin { max-width: 380px; margin: 48px auto; }
+.signin label { display: block; margin: 12px 0 4px; color: var(--muted); font-size: 13px; }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.err { color: var(--bad); margin-top: 10px; }
+.note { white-space: pre-wrap; max-width: 420px; }
+dialog { border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--text);
+  width: min(900px, calc(100vw - 32px)); max-height: 85vh; padding: 0; }
+dialog .head { display: flex; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+dialog .head h3 { margin: 0; font-size: 15px; }
+dialog .head button { margin-left: auto; }
+dialog .body { padding: 16px; overflow: auto; max-height: calc(85vh - 60px); }
+.kv { display: grid; grid-template-columns: 160px 1fr; gap: 4px 12px; margin-bottom: 16px; }
+.kv div:nth-child(odd) { color: var(--muted); }
+@media (max-width: 600px) { .kv { grid-template-columns: 1fr; } .kv div:nth-child(odd) { margin-top: 6px; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Device Fleet</h1>
+  <span class="who" id="who"></span>
+  <button class="ghost" id="refresh" hidden>Refresh</button>
+  <button class="ghost" id="signout" hidden>Sign out</button>
+</header>
+<main id="app"></main>
+
+<dialog id="dlg"><div class="head"><h3 id="dlgTitle"></h3><button class="ghost" id="dlgClose">Close</button></div>
+  <div class="body" id="dlgBody"></div></dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const SUPABASE_URL = 'https://dbafhvuutqbtsarwhtuk.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_WgCtDYAlQw0O4Z1oMzUOEQ_1IVxvQ9i';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const STALE_DAYS = 7;
+
+const $ = (s) => document.querySelector(s);
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) =>
+  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+function ago(t) {
+  if (!t) return '<span class="muted">never</span>';
+  const s = (Date.now() - new Date(t)) / 1000;
+  const txt = s < 60 ? 'just now' : s < 3600 ? `${Math.floor(s / 60)} min ago`
+    : s < 86400 ? `${Math.floor(s / 3600)} h ago` : `${Math.floor(s / 86400)} d ago`;
+  const cls = s > STALE_DAYS * 86400 ? 'warn' : '';
+  return `<span class="${cls}" title="${esc(new Date(t).toLocaleString())}">${txt}</span>`;
+}
+const when = (t) => t ? esc(new Date(t).toLocaleString()) : '';
+
+let state = { user: null, staff: false, boards: [], reports: [], orgs: [] };
+
+// ------------------------------------------------------------- sign-in --
+function signInView(msg) {
+  $('#who').textContent = '';
+  $('#signout').hidden = $('#refresh').hidden = true;
+  $('#app').innerHTML = `
+    <div class="card signin">
+      <h2>Sign in</h2>
+      <p class="muted">For accounts the lab has invited. You get a code by e-mail.</p>
+      <label for="email">E-mail</label>
+      <input id="email" type="email" autocomplete="email">
+      <div class="row" style="margin-top:12px">
+        <button id="send">Send code</button>
+        <button class="ghost" id="have">I have a code</button>
+      </div>
+      <div id="codeBox" hidden>
+        <label for="code">Code</label>
+        <input id="code" inputmode="numeric" autocomplete="one-time-code">
+        <div class="row" style="margin-top:12px"><button id="verify">Sign in</button></div>
+      </div>
+      <div class="err" id="err">${esc(msg || '')}</div>
+    </div>`;
+  const showCode = () => { $('#codeBox').hidden = false; $('#code').focus(); };
+  $('#send').onclick = async () => {
+    $('#err').textContent = '';
+    const { error } = await sb.auth.signInWithOtp({
+      email: $('#email').value.trim(), options: { shouldCreateUser: false } });
+    if (error) $('#err').textContent = error.message; else showCode();
+  };
+  $('#have').onclick = showCode;
+  $('#verify').onclick = async () => {
+    $('#err').textContent = '';
+    const { error } = await sb.auth.verifyOtp({
+      email: $('#email').value.trim(), token: $('#code').value.trim(), type: 'email' });
+    if (error) $('#err').textContent = error.message; else start();
+  };
+}
+
+// ---------------------------------------------------------------- data --
+async function load() {
+  const [b, r, s, o] = await Promise.all([
+    sb.from('board_status').select('*').order('name'),
+    sb.from('problem_reports').select('*').order('created_at', { ascending: false }).limit(200),
+    sb.from('staff').select('user_id').eq('user_id', state.user.id),
+    sb.from('orgs').select('id,name,status,share_runs,licence_until').order('name'),
+  ]);
+  for (const x of [b, r, s, o]) if (x.error) throw x.error;
+  state.boards = b.data; state.reports = r.data; state.orgs = o.data;
+  state.staff = s.data.length > 0;
+}
+
+function flags(b) {
+  const out = [];
+  if (b.safe_mode) out.push('<span class="chip bad">safe mode</span>');
+  if (b.crash_count) out.push(`<span class="chip bad">${b.crash_count} crash${b.crash_count > 1 ? 'es' : ''} in a row</span>`);
+  if (b.faults) out.push(`<span class="chip warn">${b.faults} fault${b.faults > 1 ? 's' : ''} recorded</span>`);
+  if (b.run_errors) out.push(`<span class="chip warn">${b.run_errors} run error${b.run_errors > 1 ? 's' : ''}</span>`);
+  if (b.last_seen && (Date.now() - new Date(b.last_seen)) > STALE_DAYS * 864e5)
+    out.push(`<span class="chip warn">not seen ${STALE_DAYS}+ d</span>`);
+  if (!b.last_seen) out.push('<span class="chip">never reported</span>');
+  if (b.open_reports) out.push(`<span class="chip bad">${b.open_reports} open report${b.open_reports > 1 ? 's' : ''}</span>`);
+  return out.join('') || '<span class="chip ok">ok</span>';
+}
+
+function render() {
+  const bs = state.boards, rs = state.reports;
+  const openR = rs.filter((r) => r.status === 'new').length;
+  const attention = bs.filter((b) => b.safe_mode || b.crash_count || b.open_reports).length;
+  const seenWeek = bs.filter((b) => b.last_seen && (Date.now() - new Date(b.last_seen)) < 7 * 864e5).length;
+  const name = (id) => state.orgs.find((o) => o.id === id)?.name ?? '';
+  const boardName = (s) => bs.find((b) => b.serial === s)?.name || s || '';
+  $('#app').innerHTML = `
+    <div class="stats">
+      <div class="stat"><b>${bs.length}</b><span>boards</span></div>
+      <div class="stat"><b>${seenWeek}</b><span>seen in the last 7 days</span></div>
+      <div class="stat"><b class="${attention ? 'bad' : ''}">${attention}</b><span>need attention</span></div>
+      <div class="stat"><b class="${openR ? 'bad' : ''}">${openR}</b><span>open problem reports</span></div>
+    </div>
+    <div class="card"><h2>Boards <span class="n">${bs.length}</span></h2><div class="scroll"><table>
+      <tr><th>Board</th><th>Organisation</th><th>Firmware</th><th>App</th><th>Last seen</th><th>Runs</th><th>Status</th></tr>
+      ${bs.map((b) => `<tr class="click" data-serial="${esc(b.serial)}">
+        <td><b>${esc(b.name || '(unnamed)')}</b><br><span class="mono muted">${esc(b.serial)}</span></td>
+        <td>${esc(b.org || '—')}</td><td class="mono">${esc(b.fw_version || '')}</td>
+        <td class="mono">${esc(b.app_version || '')}</td><td>${ago(b.last_seen)}</td>
+        <td class="mono">${b.runs ?? ''}</td><td>${flags(b)}</td></tr>`).join('') ||
+        '<tr><td colspan="7" class="muted">No boards yet.</td></tr>'}
+    </table></div></div>
+    <div class="card"><h2>Problem reports <span class="n">${rs.length}</span></h2><div class="scroll"><table>
+      <tr><th>When</th><th>Board</th>${state.staff ? '<th>Organisation</th>' : ''}<th>Note</th><th>Versions</th><th>Status</th><th></th></tr>
+      ${rs.map((r) => `<tr>
+        <td>${when(r.created_at)}</td><td>${esc(boardName(r.serial) || '—')}</td>
+        ${state.staff ? `<td>${esc(name(r.org_id))}</td>` : ''}
+        <td class="note">${esc(r.note)}</td>
+        <td class="mono">app ${esc(r.app_version || '?')}<br>fw ${esc(r.fw_version || '?')}</td>
+        <td>${state.staff ? `<select data-report="${r.id}">${['new', 'seen', 'fixed', 'wontfix']
+          .map((s) => `<option ${s === r.status ? 'selected' : ''}>${s}</option>`).join('')}</select>`
+          : `<span class="chip">${esc(r.status)}</span>`}</td>
+        <td>${r.bundle_path ? `<button class="ghost" data-zip="${esc(r.bundle_path)}">Download</button>` : ''}</td>
+      </tr>`).join('') || `<tr><td colspan="7" class="muted">No reports.</td></tr>`}
+    </table></div></div>
+    ${state.staff ? `<div class="card"><h2>Organisations <span class="n">${state.orgs.length}</span></h2><div class="scroll"><table>
+      <tr><th>Name</th><th>Status</th><th>Run data</th><th>Licence until</th><th>Boards</th></tr>
+      ${state.orgs.map((o) => `<tr><td>${esc(o.name)}</td><td>${esc(o.status)}</td>
+        <td>${o.share_runs ? 'shared' : 'not shared'}</td><td>${o.licence_until ? when(o.licence_until) : '—'}</td>
+        <td>${bs.filter((b) => b.org === o.name).length}</td></tr>`).join('')}
+    </table></div></div>` : ''}`;
+
+  document.querySelectorAll('tr[data-serial]').forEach((tr) => tr.onclick = () => openBoard(tr.dataset.serial));
+  document.querySelectorAll('select[data-report]').forEach((s) => s.onchange = async () => {
+    const { error } = await sb.from('problem_reports').update({ status: s.value }).eq('id', s.dataset.report);
+    if (error) alert(error.message); else refresh();
+  });
+  document.querySelectorAll('button[data-zip]').forEach((btn) => btn.onclick = () => download(btn.dataset.zip));
+}
+
+async function download(path) {
+  const [bucket, ...rest] = path.split('/');
+  const { data, error } = await sb.storage.from(bucket).createSignedUrl(rest.join('/'), 300, { download: true });
+  if (error) return alert(error.message);
+  location.href = data.signedUrl;
+}
+
+async function openBoard(serial) {
+  const b = state.boards.find((x) => x.serial === serial);
+  const [{ data: ev, error }, { data: runs }] = await Promise.all([
+    sb.from('board_events').select('*').eq('serial', serial).order('at', { ascending: false }).limit(100),
+    sb.from('runs').select('*').eq('serial', serial).order('started_at', { ascending: false }).limit(50),
+  ]);
+  if (error) return alert(error.message);
+  const h = ev.find((e) => e.health)?.health || {};
+  $('#dlgTitle').textContent = `${b.name || serial}`;
+  $('#dlgBody').innerHTML = `
+    <div class="kv">
+      <div>Serial</div><div class="mono">${esc(serial)}</div>
+      <div>Organisation</div><div>${esc(b.org || '—')}</div>
+      <div>Hardware</div><div>${esc(b.hw || '')}</div>
+      <div>Firmware / app</div><div class="mono">${esc(b.fw_version || '?')} / ${esc(b.app_version || '?')}</div>
+      <div>Provisioned</div><div>${when(b.provisioned_at)}</div>
+      <div>Last seen</div><div>${ago(b.last_seen)}</div>
+      <div>Health</div><div>${flags(b)}</div>
+      <div>Last record</div><div class="mono">${Object.keys(h).length ? esc(Object.entries(h)
+        .map(([k, v]) => `${k} ${typeof v === 'object' ? JSON.stringify(v) : v}`).join(' · ')) : '—'}</div>
+    </div>
+    <h3 style="font-size:14px">Events</h3><div class="scroll"><table>
+      <tr><th>When</th><th>Kind</th><th>Versions</th><th>Details</th></tr>
+      ${ev.map((e) => `<tr><td>${when(e.at)}</td><td><span class="chip">${esc(e.kind)}</span></td>
+        <td class="mono">fw ${esc(e.fw_version || '?')}<br>app ${esc(e.app_version || '?')}</td>
+        <td class="mono muted">${esc(Object.entries(e.payload || {}).filter(([, v]) => v !== null && v !== '')
+          .map(([k, v]) => `${k}: ${v}`).join(' · '))}</td></tr>`).join('') ||
+        '<tr><td colspan="4" class="muted">Nothing reported yet.</td></tr>'}
+    </table></div>
+    ${runs?.length ? `<h3 style="font-size:14px">Runs</h3><div class="scroll"><table>
+      <tr><th>Started</th><th>Technique</th><th>Run</th><th></th></tr>
+      ${runs.map((r) => `<tr><td>${when(r.started_at)}</td><td>${esc(r.technique)}</td>
+        <td class="mono">${esc(r.local_id)}</td>
+        <td>${r.file_path ? `<button class="ghost" data-zip="${esc(r.file_path)}">Download</button>` : ''}</td></tr>`).join('')}
+    </table></div>` : ''}`;
+  $('#dlgBody').querySelectorAll('button[data-zip]').forEach((btn) => btn.onclick = () => download(btn.dataset.zip));
+  $('#dlg').showModal();
+}
+
+// ---------------------------------------------------------------- start --
+async function refresh() {
+  try { await load(); render(); } catch (e) { $('#app').innerHTML = `<div class="card err">${esc(e.message)}</div>`; }
+}
+
+async function start() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return signInView();
+  state.user = session.user;
+  $('#who').textContent = session.user.email;
+  $('#signout').hidden = $('#refresh').hidden = false;
+  await refresh();
+  if (state.staff) $('#who').textContent += ' · lab staff';
+}
+
+$('#signout').onclick = async () => { await sb.auth.signOut(); signInView(); };
+$('#refresh').onclick = refresh;
+$('#dlgClose').onclick = () => $('#dlg').close();
+start();
+</script>
+</body>
+</html>
