@@ -108,7 +108,7 @@ function ago(t) {
 }
 const when = (t) => t ? esc(new Date(t).toLocaleString()) : '';
 
-let state = { user: null, staff: false, boards: [], reports: [], orgs: [] };
+let state = { user: null, staff: false, boards: [], reports: [], orgs: [], alerts: [] };
 
 // ------------------------------------------------------------- sign-in --
 function signInView(msg) {
@@ -149,14 +149,15 @@ function signInView(msg) {
 
 // ---------------------------------------------------------------- data --
 async function load() {
-  const [b, r, s, o] = await Promise.all([
+  const [b, r, s, o, a] = await Promise.all([
     sb.from('board_status').select('*').order('name'),
     sb.from('problem_reports').select('*').order('created_at', { ascending: false }).limit(200),
     sb.from('staff').select('user_id').eq('user_id', state.user.id),
     sb.from('orgs').select('id,name,status,share_runs,licence_until').order('name'),
+    sb.from('alerts').select('*').is('resolved_at', null).order('created_at', { ascending: false }),
   ]);
-  for (const x of [b, r, s, o]) if (x.error) throw x.error;
-  state.boards = b.data; state.reports = r.data; state.orgs = o.data;
+  for (const x of [b, r, s, o, a]) if (x.error) throw x.error;
+  state.boards = b.data; state.reports = r.data; state.orgs = o.data; state.alerts = a.data;
   state.staff = s.data.length > 0;
 }
 
@@ -176,7 +177,8 @@ function flags(b) {
 function render() {
   const bs = state.boards, rs = state.reports;
   const openR = rs.filter((r) => r.status === 'new').length;
-  const attention = bs.filter((b) => b.safe_mode || b.crash_count || b.open_reports).length;
+  const al = state.alerts;
+  const attention = new Set(al.map((x) => x.serial)).size;
   const seenWeek = bs.filter((b) => b.last_seen && (Date.now() - new Date(b.last_seen)) < 7 * 864e5).length;
   const name = (id) => state.orgs.find((o) => o.id === id)?.name ?? '';
   const boardName = (s) => bs.find((b) => b.serial === s)?.name || s || '';
@@ -184,9 +186,16 @@ function render() {
     <div class="stats">
       <div class="stat"><b>${bs.length}</b><span>boards</span></div>
       <div class="stat"><b>${seenWeek}</b><span>seen in the last 7 days</span></div>
-      <div class="stat"><b class="${attention ? 'bad' : ''}">${attention}</b><span>need attention</span></div>
+      <div class="stat"><b class="${attention ? 'bad' : ''}">${attention}</b><span>boards with open alerts</span></div>
       <div class="stat"><b class="${openR ? 'bad' : ''}">${openR}</b><span>open problem reports</span></div>
     </div>
+    ${al.length ? `<div class="card"><h2>Alerts <span class="n">${al.length}</span></h2><div class="scroll"><table>
+      <tr><th>Since</th><th>Kind</th><th>What</th>${state.staff ? '<th></th>' : ''}</tr>
+      ${al.map((x) => `<tr><td>${ago(x.created_at)}</td>
+        <td><span class="chip ${x.kind === 'stale' || x.kind === 'report' ? 'warn' : 'bad'}">${esc(x.kind.replace('_', ' '))}</span></td>
+        <td>${esc(x.message)}</td>
+        ${state.staff ? `<td><button class="ghost" data-alert="${x.id}">Close</button></td>` : ''}</tr>`).join('')}
+    </table></div><p class="muted" style="margin:8px 0 0">Alerts close by themselves when the cause goes away.</p></div>` : ''}
     <div class="card"><h2>Boards <span class="n">${bs.length}</span></h2><div class="scroll"><table>
       <tr><th>Board</th><th>Organisation</th><th>Firmware</th><th>App</th><th>Last seen</th><th>Runs</th><th>Status</th></tr>
       ${bs.map((b) => `<tr class="click" data-serial="${esc(b.serial)}">
@@ -222,6 +231,11 @@ function render() {
     if (error) alert(error.message); else refresh();
   });
   document.querySelectorAll('button[data-zip]').forEach((btn) => btn.onclick = () => download(btn.dataset.zip));
+  document.querySelectorAll('button[data-alert]').forEach((btn) => btn.onclick = async () => {
+    const { error } = await sb.from('alerts').update({ resolved_at: new Date().toISOString(),
+      resolved_by: state.user.email }).eq('id', btn.dataset.alert);
+    if (error) alert(error.message); else refresh();
+  });
 }
 
 async function download(path) {
