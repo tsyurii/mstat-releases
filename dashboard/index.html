@@ -92,7 +92,7 @@ dialog .body { padding: 16px; overflow: auto; max-height: calc(85vh - 60px); }
 const SUPABASE_URL = 'https://dbafhvuutqbtsarwhtuk.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_WgCtDYAlQw0O4Z1oMzUOEQ_1IVxvQ9i';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const STALE_DAYS = 7;
+const STALE_DAYS = 30;
 
 const $ = (s) => document.querySelector(s);
 const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) =>
