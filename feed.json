@@ -49,6 +49,13 @@
         "notes": "1.17.0 beta: a run survives a dropped Bluetooth link (journal + resume); health record; SWV clip flags (1.16.0)."
       }
     ],
-    "app": null
+    "app": {
+      "version": "1.17.0",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.17.0/mstat-1.17.0.apk",
+      "sha256": "d9487a04307d50f2d2e076be335776c417fb36b889fbaf7490d66f7ee3d4a38e",
+      "size": 56875727,
+      "date": "2026-10-19",
+      "notes": "1.17.0 beta: unified Run screen, automatic saving, release channels, Report a problem, methods sheet."
+    }
   }
 }
