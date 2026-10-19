@@ -50,12 +50,12 @@
       }
     ],
     "app": {
-      "version": "1.18.1",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.18.1/mstat-1.18.1.apk",
-      "sha256": "3e401203cc6a2be6ceca72d69565eb987a0d81fe2d2b0648fa496146dea027ab",
+      "version": "1.18.2",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.18.2/mstat-1.18.2.apk",
+      "sha256": "b7953ac74f11e4674d247cf831a42d81a59a55276aa2522a19bbd0b987335066",
       "size": 57088715,
       "date": "2026-10-19",
-      "notes": "Lab dashboard: Device -> Lab dashboard to sign in (code from the lab). While signed in, the tablet sends each board's health at connect and after runs, and problem reports go to the lab automatically. Nothing is sent while signed out; never the PIN."
+      "notes": "Heartbeat carries the fitted gain resistor (dashboard shows hardware and current range); heartbeat at sign-in and on Send now."
     }
   }
 }
