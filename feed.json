@@ -27,12 +27,12 @@
     }
   ],
   "app": {
-    "version": "1.20.1",
-    "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.20.1/mstat-1.20.1.apk",
-    "sha256": "4a203624a25c1834bd6576435a4a235e88dffbba6db86b1348b53733185486fb",
-    "size": 57269083,
+    "version": "1.20.2",
+    "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.20.2/mstat-1.20.2.apk",
+    "sha256": "08ee9bf3467165b7e5f7ae335df662066b7d3f4485342bf735f97fbfeff7a4e7",
+    "size": 57269103,
     "date": "2026-10-19",
-    "notes": "Tap or drag on the plot to read the values: the potential/time there and each curve's value in its colour."
+    "notes": "App updates are offered at the top of the Device screen, with or without a board; the update card is now called Updates."
   },
   "beta": {
     "firmware": [
@@ -61,13 +61,6 @@
         "notes": "Board log over BLE: the board's own messages, kept across a crash, readable in the app (Device -> Board log, app >= 1.19.0) and included in every problem report."
       }
     ],
-    "app": {
-      "version": "1.20.2",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.20.2/mstat-1.20.2.apk",
-      "sha256": "08ee9bf3467165b7e5f7ae335df662066b7d3f4485342bf735f97fbfeff7a4e7",
-      "size": 57269103,
-      "date": "2026-10-19",
-      "notes": "App updates are offered at the top of the Device screen, with or without a board; the update card is now called Updates."
-    }
+    "app": null
   }
 }
