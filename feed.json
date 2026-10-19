@@ -27,12 +27,12 @@
     }
   ],
   "app": {
-    "version": "1.8.0",
-    "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.8.0/mstat-1.8.0.apk",
-    "sha256": "a5f09f62d01a0845835375a9b074e69a184a75ed218bb0c6fdc491938239c97a",
-    "size": 54171551,
-    "date": "2026-10-18",
-    "notes": "Permanent app identity and release signing. If an older MSTAT app (1.7.1 or earlier) is installed: install this one, check it connects, then uninstall the old one. Exports in Download/MSTAT and Bluetooth pairings are kept."
+    "version": "1.20.0",
+    "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.20.0/mstat-1.20.0.apk",
+    "sha256": "9bb55f3ae0626bd90daa4bdc97fca3a4fa1684084d8816256dbcc362ed257830",
+    "size": 57269083,
+    "date": "2026-10-19",
+    "notes": "Runs of a session stay on the plot together (repeats and runs one after another); several columns at once (SWV forward + reverse + difference); Save/Share figure (PNG); methods saved to Download/MSTAT/methods; tap a legend name to hide a curve."
   },
   "beta": {
     "firmware": [
@@ -61,13 +61,6 @@
         "notes": "Board log over BLE: the board's own messages, kept across a crash, readable in the app (Device -> Board log, app >= 1.19.0) and included in every problem report."
       }
     ],
-    "app": {
-      "version": "1.20.0",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.20.0/mstat-1.20.0.apk",
-      "sha256": "9bb55f3ae0626bd90daa4bdc97fca3a4fa1684084d8816256dbcc362ed257830",
-      "size": 57269083,
-      "date": "2026-10-19",
-      "notes": "Runs of a session stay on the plot together (repeats and runs one after another); several columns at once (SWV forward + reverse + difference); Save/Share figure (PNG); methods saved to Download/MSTAT/methods; tap a legend name to hide a curve."
-    }
+    "app": null
   }
 }
