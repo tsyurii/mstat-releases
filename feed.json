@@ -62,12 +62,12 @@
       }
     ],
     "app": {
-      "version": "1.19.3",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.19.3/mstat-1.19.3.apk",
-      "sha256": "63db7bca9574c7c298edc762a430cc685d0ccd6b75480b326e6941aebfd04df8",
-      "size": 57170695,
+      "version": "1.19.4",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.19.4/mstat-1.19.4.apk",
+      "sha256": "e35734d753d09ff6eff88529a915369b71b0e55997edcac1170605296f13b890",
+      "size": 57170691,
       "date": "2026-10-19",
-      "notes": "Lab dashboard sign-in: 'I have a code' to type a code you already received; a clear message when a code was requested less than a minute ago."
+      "notes": "Connection errors in plain words: 'the board may be connected to another tablet or phone' instead of Android code 133."
     }
   }
 }
