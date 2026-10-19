@@ -27,12 +27,12 @@
     }
   ],
   "app": {
-    "version": "1.20.2",
-    "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.20.2/mstat-1.20.2.apk",
-    "sha256": "08ee9bf3467165b7e5f7ae335df662066b7d3f4485342bf735f97fbfeff7a4e7",
+    "version": "1.20.3",
+    "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.20.3/mstat-1.20.3.apk",
+    "sha256": "84f36a7ab02bdd3cb7312d8481f9215f5bf4f691acded1a6b2b8f143f54e6ca3",
     "size": 57269103,
     "date": "2026-10-19",
-    "notes": "App updates are offered at the top of the Device screen, with or without a board; the update card is now called Updates."
+    "notes": "Send now (Device > Lab dashboard) retries uploads the server refused; run files are accepted again."
   },
   "beta": {
     "firmware": [
@@ -61,13 +61,6 @@
         "notes": "Board log over BLE: the board's own messages, kept across a crash, readable in the app (Device -> Board log, app >= 1.19.0) and included in every problem report."
       }
     ],
-    "app": {
-      "version": "1.20.3",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.20.3/mstat-1.20.3.apk",
-      "sha256": "84f36a7ab02bdd3cb7312d8481f9215f5bf4f691acded1a6b2b8f143f54e6ca3",
-      "size": 57269103,
-      "date": "2026-10-19",
-      "notes": "Send now (Device > Lab dashboard) retries uploads the server refused; run files are accepted again."
-    }
+    "app": null
   }
 }
