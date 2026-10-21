@@ -59,6 +59,18 @@
         "size": 292836,
         "date": "2026-10-19",
         "notes": "Board log over BLE: the board's own messages, kept across a crash, readable in the app (Device -> Board log, app >= 1.19.0) and included in every problem report."
+      },
+      {
+        "version": "1.19.0",
+        "board": "mstat",
+        "hw": [
+          "1.2"
+        ],
+        "url": "https://github.com/tsyurii/mstat-releases/releases/download/fw-mstat-1.19.0/mstat-fw-mstat-1.19.0.zip",
+        "sha256": "d5c86825fa3d9e00fb416327fc02527c4f900fb2fc46aed18d25a1630b16ea9a",
+        "size": 293136,
+        "date": "2026-10-21",
+        "notes": "1.19.0: the board applies its potential calibration (SOP test A, app 1.21.0) to every potential step."
       }
     ],
     "app": null
