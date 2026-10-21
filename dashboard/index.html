@@ -73,6 +73,14 @@ dialog .body { padding: 16px; overflow: auto; max-height: calc(85vh - 60px); }
 .kv { display: grid; grid-template-columns: 160px 1fr; gap: 4px 12px; margin-bottom: 16px; }
 .kv div:nth-child(odd) { color: var(--muted); }
 @media (max-width: 600px) { .kv { grid-template-columns: 1fr; } .kv div:nth-child(odd) { margin-top: 6px; } }
+.qa td.c { text-align: center; white-space: nowrap; }
+.qa th.c { text-align: center; }
+.qaform { display: grid; grid-template-columns: 140px 1fr; gap: 8px 12px; align-items: center; margin: 8px 0 16px; }
+.qaform textarea { font: inherit; color: inherit; background: var(--card); border: 1px solid var(--line);
+  border-radius: 8px; padding: 8px 10px; width: 100%; min-height: 60px; }
+@media (max-width: 600px) { .qaform { grid-template-columns: 1fr; } }
+@media print { header, button, .noprint { display: none !important; } dialog { position: static; border: 0;
+  max-height: none; width: auto; } dialog .body { max-height: none; overflow: visible; } }
 </style>
 </head>
 <body>
@@ -116,7 +124,7 @@ function hardware(b) {
 }
 const when = (t) => t ? esc(new Date(t).toLocaleString()) : '';
 
-let state = { user: null, staff: false, boards: [], reports: [], orgs: [], alerts: [] };
+let state = { user: null, staff: false, boards: [], reports: [], orgs: [], alerts: [], checks: [], qa: [] };
 
 // ------------------------------------------------------------- sign-in --
 function signInView(msg) {
@@ -157,15 +165,19 @@ function signInView(msg) {
 
 // ---------------------------------------------------------------- data --
 async function load() {
-  const [b, r, s, o, a] = await Promise.all([
+  const [b, r, s, o, a, qc, ql] = await Promise.all([
     sb.from('board_status').select('*').order('name'),
     sb.from('problem_reports').select('*').order('created_at', { ascending: false }).limit(200),
     sb.from('staff').select('user_id').eq('user_id', state.user.id),
     sb.from('orgs').select('id,name,status,share_runs,licence_until').order('name'),
     sb.from('alerts').select('*').is('resolved_at', null).order('created_at', { ascending: false }),
+    sb.from('qa_checks').select('*').order('sort'),
+    sb.from('qa_latest').select('*'),
   ]);
   for (const x of [b, r, s, o, a]) if (x.error) throw x.error;
   state.boards = b.data; state.reports = r.data; state.orgs = o.data; state.alerts = a.data;
+  // QA tables arrive with migration 009; the rest of the page works without them.
+  state.checks = qc.error ? [] : qc.data; state.qa = ql.error ? [] : ql.data;
   state.staff = s.data.length > 0;
 }
 
@@ -213,6 +225,7 @@ function render() {
         <td class="mono">${b.runs ?? ''}</td><td>${flags(b)}</td></tr>`).join('') ||
         '<tr><td colspan="8" class="muted">No boards yet.</td></tr>'}
     </table></div></div>
+    ${state.checks.length ? qaCard(bs) : ''}
     <div class="card"><h2>Problem reports <span class="n">${rs.length}</span></h2><div class="scroll"><table>
       <tr><th>When</th><th>Board</th>${state.staff ? '<th>Organisation</th>' : ''}<th>Note</th><th>Versions</th><th>Status</th><th></th></tr>
       ${rs.map((r) => `<tr>
@@ -234,6 +247,7 @@ function render() {
     </table></div></div>` : ''}`;
 
   document.querySelectorAll('tr[data-serial]').forEach((tr) => tr.onclick = () => openBoard(tr.dataset.serial));
+  document.querySelectorAll('tr[data-qa]').forEach((tr) => tr.onclick = () => openBoard(tr.dataset.qa, true));
   document.querySelectorAll('select[data-report]').forEach((s) => s.onchange = async () => {
     const { error } = await sb.from('problem_reports').update({ status: s.value }).eq('id', s.dataset.report);
     if (error) alert(error.message); else refresh();
@@ -253,7 +267,7 @@ async function download(path) {
   location.href = data.signedUrl;
 }
 
-async function openBoard(serial) {
+async function openBoard(serial, toQa) {
   const b = state.boards.find((x) => x.serial === serial);
   const [{ data: ev, error }, { data: runs }] = await Promise.all([
     sb.from('board_events').select('*').eq('serial', serial).order('at', { ascending: false }).limit(100),
@@ -289,7 +303,107 @@ async function openBoard(serial) {
         <td>${r.file_path ? `<button class="ghost" data-zip="${esc(r.file_path)}">Download</button>` : ''}</td></tr>`).join('')}
     </table></div>` : ''}`;
   $('#dlgBody').querySelectorAll('button[data-zip]').forEach((btn) => btn.onclick = () => download(btn.dataset.zip));
+  if (state.checks.length) await qaSection(b, serial);
+  if ($('#dlg').open) $('#dlg').close();
   $('#dlg').showModal();
+  if (toQa) $('#qa')?.scrollIntoView();
+}
+
+// ------------------------------------------------------------------ QA --
+// The shipping checklist (docs/pilot protocol 8a): latest result per check.
+function qaMark(r) {
+  if (!r) return '<span class="muted">—</span>';
+  const t = esc(`${new Date(r.at).toLocaleDateString()} · ${r.summary}`);
+  if (r.passed === true) return `<span class="chip ok" title="${t}">pass</span>`;
+  if (r.passed === false) return `<span class="chip bad" title="${t}">fail</span>`;
+  return `<span class="chip" title="${t}">recorded</span>`;
+}
+
+function qaCard(bs) {
+  const cs = state.checks;
+  const latest = (s, c) => state.qa.find((r) => r.serial === s && r.check_id === c);
+  return `<div class="card"><h2>QA checklist <span class="n">${cs.length} checks</span></h2>
+    <div class="scroll"><table class="qa">
+      <tr><th>Board</th>${cs.map((c) => `<th class="c" title="${esc(c.title)} — pass: ${esc(c.pass_rule)}${c.scope === 'design' ? ' (once per hardware/firmware)' : ''}">${esc(c.id)}</th>`).join('')}<th class="c">Passed</th></tr>
+      ${bs.map((b) => {
+        const n = cs.filter((c) => latest(b.serial, c.id)?.passed === true).length;
+        return `<tr class="click" data-qa="${esc(b.serial)}"><td><b>${esc(b.name || b.serial)}</b></td>
+          ${cs.map((c) => `<td class="c">${qaMark(latest(b.serial, c.id))}</td>`).join('')}
+          <td class="c mono">${n}/${cs.length}</td></tr>`;
+      }).join('')}
+    </table></div>
+    <p class="muted" style="margin:8px 0 0">Hover a mark for the date and result; click a board for its history,
+      to add a result, or to print its certificate. ${cs.map((c) => `<b>${esc(c.id)}</b> ${esc(c.title)}`).join(' · ')}</p></div>`;
+}
+
+async function qaSection(b, serial) {
+  const { data: rs, error } = await sb.from('qa_results').select('*').eq('serial', serial).order('at', { ascending: false });
+  if (error) return;
+  const cs = state.checks;
+  const latest = (c) => rs.find((r) => r.check_id === c);
+  const box = document.createElement('div');
+  box.id = 'qa';
+  box.innerHTML = `
+    <h3 style="font-size:14px">QA checklist</h3>
+    <div class="row noprint" style="margin-bottom:8px">
+      <button class="ghost" id="qaPrint">Print certificate</button>
+      <button class="ghost" id="qaAdd">Add a result</button></div>
+    <form class="qaform noprint" id="qaForm" hidden>
+      <label for="qaCheck">Check</label>
+      <select id="qaCheck">${cs.map((c) => `<option value="${esc(c.id)}">${esc(c.id)} · ${esc(c.title)}</option>`).join('')}</select>
+      <label>Pass rule</label><div class="muted" id="qaRule"></div>
+      <label for="qaPassed">Result</label>
+      <select id="qaPassed"><option value="true">pass</option><option value="false">fail</option><option value="">recorded only</option></select>
+      <label for="qaSummary">What was measured</label><textarea id="qaSummary" placeholder="e.g. 10.00 kΩ 0.1 %: read 9.996 kΩ (−0.04 %); 47.0 kΩ: 47.03 kΩ (+0.06 %)"></textarea>
+      <label for="qaValue">Numbers (optional)</label><input id="qaValue" placeholder="key=value, key=value  e.g. err_pct=-0.04, i_uA=30.1">
+      <label for="qaWhen">When</label><input id="qaWhen" type="datetime-local">
+      <label for="qaOp">Operator</label><input id="qaOp" value="${esc(state.user.email.split('@')[0])}">
+      <label for="qaFile">Data file (optional)</label><input id="qaFile" placeholder="data/bench/2026-10-22_…/readings.csv">
+      <span></span><div class="row"><button type="submit">Save result</button><span class="err" id="qaErr"></span></div>
+    </form>
+    <div class="scroll"><table>
+      <tr><th>Check</th><th>Pass rule</th><th>Latest</th><th>When</th><th>Result</th></tr>
+      ${cs.map((c) => { const r = latest(c.id); return `<tr><td><b>${esc(c.id)}</b> ${esc(c.title)}${c.scope === 'design' ? ' <span class="muted">(once per design)</span>' : ''}</td>
+        <td class="muted">${esc(c.pass_rule)}</td><td>${qaMark(r)}</td><td>${r ? when(r.at) : ''}</td>
+        <td>${r ? esc(r.summary) : ''}</td></tr>`; }).join('')}
+    </table></div>
+    <h3 style="font-size:14px">QA history</h3><div class="scroll"><table>
+      <tr><th>When</th><th>Check</th><th>Result</th><th>Summary</th><th>Versions</th><th>By</th><th>Data</th></tr>
+      ${rs.map((r) => `<tr><td>${when(r.at)}</td><td><b>${esc(r.check_id)}</b></td><td>${qaMark(r)}</td>
+        <td>${esc(r.summary)}${r.value ? `<br><span class="mono muted">${esc(Object.entries(r.value)
+          .map(([k, v]) => `${k} ${Array.isArray(v) ? v.join(' ') : v}`).join(' · '))}</span>` : ''}</td>
+        <td class="mono">fw ${esc(r.fw_version || '?')}<br>app ${esc(r.app_version || '?')}</td>
+        <td>${esc(r.operator || r.source)}</td><td class="mono muted">${esc(r.file_path || '')}</td></tr>`).join('') ||
+        '<tr><td colspan="7" class="muted">No QA results yet.</td></tr>'}
+    </table></div>`;
+  $('#dlgBody').appendChild(box);
+  const rule = () => { $('#qaRule').textContent = cs.find((c) => c.id === $('#qaCheck').value)?.pass_rule || ''; };
+  $('#qaCheck').onchange = rule; rule();
+  $('#qaAdd').onclick = () => { $('#qaForm').hidden = !$('#qaForm').hidden; };
+  $('#qaPrint').onclick = () => {
+    const title = $('#dlgTitle').textContent;
+    $('#dlgTitle').textContent = `${title} — QA certificate, ${new Date().toLocaleDateString()}`;
+    window.print();
+    $('#dlgTitle').textContent = title;
+  };
+  $('#qaForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const value = {};
+    for (const part of $('#qaValue').value.split(',')) {
+      const [k, v] = part.split('=').map((x) => x?.trim());
+      if (k && v !== undefined) value[k] = isNaN(+v) ? v : +v;
+    }
+    const pv = $('#qaPassed').value;
+    const row = { serial, check_id: $('#qaCheck').value, passed: pv === '' ? null : pv === 'true',
+      summary: $('#qaSummary').value.trim(), value: Object.keys(value).length ? value : null,
+      fw_version: b.fw_version, app_version: b.app_version, source: 'manual',
+      operator: $('#qaOp').value.trim() || null, file_path: $('#qaFile').value.trim() || null };
+    if ($('#qaWhen').value) row.at = new Date($('#qaWhen').value).toISOString();
+    if (!row.summary) { $('#qaErr').textContent = 'Write what was measured.'; return; }
+    const { error } = await sb.from('qa_results').insert(row);
+    if (error) { $('#qaErr').textContent = error.message; return; }
+    await load(); render(); openBoard(serial, true);
+  };
 }
 
 // ---------------------------------------------------------------- start --
