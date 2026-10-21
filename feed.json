@@ -27,12 +27,12 @@
     }
   ],
   "app": {
-    "version": "1.20.3",
-    "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.20.3/mstat-1.20.3.apk",
-    "sha256": "84f36a7ab02bdd3cb7312d8481f9215f5bf4f691acded1a6b2b8f143f54e6ca3",
+    "version": "1.20.4",
+    "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.20.4/mstat-1.20.4.apk",
+    "sha256": "a424b9f1e59a887c7dbbc196c0328aeab0f469f9d7185ab2fd6028a7bda39874",
     "size": 57269103,
-    "date": "2026-10-19",
-    "notes": "Send now (Device > Lab dashboard) retries uploads the server refused; run files are accepted again."
+    "date": "2026-10-21",
+    "notes": "Fix: a run is saved even when another tab is open when it ends (runs could be lost if you left the Run screen during a run)."
   },
   "beta": {
     "firmware": [
@@ -61,13 +61,6 @@
         "notes": "Board log over BLE: the board's own messages, kept across a crash, readable in the app (Device -> Board log, app >= 1.19.0) and included in every problem report."
       }
     ],
-    "app": {
-      "version": "1.20.4",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.20.4/mstat-1.20.4.apk",
-      "sha256": "a424b9f1e59a887c7dbbc196c0328aeab0f469f9d7185ab2fd6028a7bda39874",
-      "size": 57269103,
-      "date": "2026-10-21",
-      "notes": "Fix: a run is saved even when another tab is open when it ends (runs could be lost if you left the Run screen during a run)."
-    }
+    "app": null
   }
 }
