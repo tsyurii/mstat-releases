@@ -71,6 +71,18 @@
         "size": 293136,
         "date": "2026-10-21",
         "notes": "1.19.0: the board applies its potential calibration (SOP test A, app 1.21.0) to every potential step."
+      },
+      {
+        "version": "1.19.1",
+        "board": "mstat",
+        "hw": [
+          "1.2"
+        ],
+        "url": "https://github.com/tsyurii/mstat-releases/releases/download/fw-mstat-1.19.1/mstat-fw-mstat-1.19.1.zip",
+        "sha256": "64ff98eab7a61cef925e1119713d76222558154f3b7c2befdfc04c39047c4487",
+        "size": 293602,
+        "date": "2026-10-21",
+        "notes": "1.19.1: holds the 32 MHz crystal during every measurement, so step and sample timing (scan rate, SWV frequency, mains-rejection window) is crystal-accurate on every board."
       }
     ],
     "app": {
