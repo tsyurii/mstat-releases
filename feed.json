@@ -73,6 +73,13 @@
         "notes": "1.19.0: the board applies its potential calibration (SOP test A, app 1.21.0) to every potential step."
       }
     ],
-    "app": null
+    "app": {
+      "version": "1.21.0",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.21.0/mstat-1.21.0.apk",
+      "sha256": "6346c590aeb0d828b503b0cfea4bf79b1cb72e48cbc20fb745b31649208ecd1a",
+      "size": 57285483,
+      "date": "2026-10-21",
+      "notes": "1.21.0: Potential calibration card (Board settings): type SOP test A meter readings, fit, save to the board (applied by firmware 1.19.0). CSV records it."
+    }
   }
 }
