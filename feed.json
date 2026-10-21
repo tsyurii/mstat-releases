@@ -86,12 +86,12 @@
       }
     ],
     "app": {
-      "version": "1.21.1",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.21.1/mstat-1.21.1.apk",
-      "sha256": "700586b9b6dcaf78eebd13ea6ded680d8dc74466465c5574f1899fe18876abbf",
-      "size": 57285487,
+      "version": "1.21.2",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.21.2/mstat-1.21.2.apk",
+      "sha256": "6f69946a0fdd1d43a94f7589300621366e8af44fe0794f245072c0bc929c227b",
+      "size": 57285567,
       "date": "2026-10-21",
-      "notes": "1.21.1: the potential calibration card asks whether the readings were taken with the stored calibration in force; the app reports its own version correctly (1.21.0 showed 1.20.4)."
+      "notes": "1.21.2: after Disconnect, a reminder to unplug a V1 board's battery if it will not be used today."
     }
   }
 }
