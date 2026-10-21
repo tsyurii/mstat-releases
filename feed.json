@@ -61,6 +61,13 @@
         "notes": "Board log over BLE: the board's own messages, kept across a crash, readable in the app (Device -> Board log, app >= 1.19.0) and included in every problem report."
       }
     ],
-    "app": null
+    "app": {
+      "version": "1.20.4",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.20.4/mstat-1.20.4.apk",
+      "sha256": "a424b9f1e59a887c7dbbc196c0328aeab0f469f9d7185ab2fd6028a7bda39874",
+      "size": 57269103,
+      "date": "2026-10-21",
+      "notes": "Fix: a run is saved even when another tab is open when it ends (runs could be lost if you left the Run screen during a run)."
+    }
   }
 }
