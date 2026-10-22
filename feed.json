@@ -95,6 +95,18 @@
         "size": 293345,
         "date": "2026-10-22",
         "notes": "1.19.2: no ADC offset re-calibration at every run start. Repeat runs no longer jump by up to 0.6 % (0.17 uA on 20 kOhm). After installing, redo the zero calibration (open circuit) and then the gain calibration."
+      },
+      {
+        "version": "1.19.3",
+        "board": "mstat",
+        "hw": [
+          "1.2"
+        ],
+        "url": "https://github.com/tsyurii/mstat-releases/releases/download/fw-mstat-1.19.3/mstat-fw-mstat-1.19.3.zip",
+        "sha256": "083ecfd5ddf6084ca463c01efd696dfad93665b982089b9b36ce691e031bb8ea",
+        "size": 293734,
+        "date": "2026-10-22",
+        "notes": "1.19.3: the board log records the nRF52840 VBUS detector at boot and on every change. On V1.2 the cell is on VBUS; MSTAT-02 measured 3.75 V threshold (about half charge), the base for the low-battery warning. Measurements unchanged from 1.19.2."
       }
     ],
     "app": {
