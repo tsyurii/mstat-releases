@@ -98,12 +98,12 @@
       }
     ],
     "app": {
-      "version": "1.21.2",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.21.2/mstat-1.21.2.apk",
-      "sha256": "6f69946a0fdd1d43a94f7589300621366e8af44fe0794f245072c0bc929c227b",
-      "size": 57285567,
-      "date": "2026-10-21",
-      "notes": "1.21.2: after Disconnect, a reminder to unplug a V1 board's battery if it will not be used today."
+      "version": "1.21.3",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.21.3/mstat-1.21.3.apk",
+      "sha256": "f38c290f412e619a912884ff2b4294a371cfff1a1274438906807d42467a4bd1",
+      "size": 57465855,
+      "date": "2026-10-22",
+      "notes": "1.21.3: all runs of one Start in one file (SWV and CV/DPV/LSV side by side with mean and SD; CA runs together besides the per-run files); CA batch shows the countdown to the next run with Start now and asks before a delay over 5 min; zero calibration works with any equilibration setting."
     }
   }
 }
