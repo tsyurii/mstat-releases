@@ -83,6 +83,18 @@
         "size": 293602,
         "date": "2026-10-21",
         "notes": "1.19.1: holds the 32 MHz crystal during every measurement, so step and sample timing (scan rate, SWV frequency, mains-rejection window) is crystal-accurate on every board."
+      },
+      {
+        "version": "1.19.2",
+        "board": "mstat",
+        "hw": [
+          "1.2"
+        ],
+        "url": "https://github.com/tsyurii/mstat-releases/releases/download/fw-mstat-1.19.2/mstat-fw-mstat-1.19.2.zip",
+        "sha256": "3a86e3ee3fc9278453f1ff5ba4399962d1f3cb96f694e72733d3868aa967a1f2",
+        "size": 293345,
+        "date": "2026-10-22",
+        "notes": "1.19.2: no ADC offset re-calibration at every run start. Repeat runs no longer jump by up to 0.6 % (0.17 uA on 20 kOhm). After installing, redo the zero calibration (open circuit) and then the gain calibration."
       }
     ],
     "app": {
