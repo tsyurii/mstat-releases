@@ -110,12 +110,12 @@
       }
     ],
     "app": {
-      "version": "1.21.3",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.21.3/mstat-1.21.3.apk",
-      "sha256": "f38c290f412e619a912884ff2b4294a371cfff1a1274438906807d42467a4bd1",
+      "version": "1.21.4",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.21.4/mstat-1.21.4.apk",
+      "sha256": "30f66b531df7d81b64c7b5c5145212b6a2c5f0845ffedc6788d021551fdfaa7c",
       "size": 57465855,
       "date": "2026-10-22",
-      "notes": "1.21.3: all runs of one Start in one file (SWV and CV/DPV/LSV side by side with mean and SD; CA runs together besides the per-run files); CA batch shows the countdown to the next run with Start now and asks before a delay over 5 min; zero calibration works with any equilibration setting."
+      "notes": "1.21.4: CA runs of one Start go live into one file with a run column (no 1/3, 2/3 files). All timing fields in seconds like PSTrace (equilibration, delays, DPV pulse width). Tap the replicate (r12) to type it; a new sample or concentration starts again at r1."
     }
   }
 }
