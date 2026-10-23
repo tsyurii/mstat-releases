@@ -122,12 +122,12 @@
       }
     ],
     "app": {
-      "version": "1.21.4",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.21.4/mstat-1.21.4.apk",
-      "sha256": "30f66b531df7d81b64c7b5c5145212b6a2c5f0845ffedc6788d021551fdfaa7c",
-      "size": 57465855,
-      "date": "2026-10-22",
-      "notes": "1.21.4: CA runs of one Start go live into one file with a run column (no 1/3, 2/3 files). All timing fields in seconds like PSTrace (equilibration, delays, DPV pulse width). Tap the replicate (r12) to type it; a new sample or concentration starts again at r1."
+      "version": "1.21.5",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.21.5/mstat-1.21.5.apk",
+      "sha256": "9407cbce7c61f7fe8920a1af5c2eece6c80d867948bf020d63fe8ee027c832e1",
+      "size": 57482239,
+      "date": "2026-10-23",
+      "notes": "1.21.5: each technique keeps its own settings (CA no longer inherits the DPV start, SWV no longer the DPV pulse). A CA batch retries a run that failed to start on a Bluetooth error instead of ending. The CA duration is the data time; equilibration comes on top. Heartbeats send the board calibration to the lab dashboard."
     }
   }
 }
