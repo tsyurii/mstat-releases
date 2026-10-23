@@ -123,6 +123,24 @@ function hardware(b) {
   return parts.join(' · ') || '<span class="muted">?</span>';
 }
 const when = (t) => t ? esc(new Date(t).toLocaleString()) : '';
+// The calibration the board measures with (heartbeat payload.cal, app >= 1.21.5):
+// zero, current gain and potential, each with its age; older than 30 days is flagged.
+function calibration(b, long) {
+  const c = b.board_cal;
+  if (!c) return '<span class="muted">not reported</span>';
+  const age = (t) => {
+    if (!t) return '';
+    const d = (Date.now() - new Date(t)) / 86400000;
+    const txt = d < 1 ? 'today' : `${Math.floor(d)} d`;
+    return ` <span class="${d > 30 ? 'warn' : 'muted'}" title="${esc(new Date(t).toLocaleString())}">${txt}</span>`;
+  };
+  const parts = [];
+  parts.push(c.zeroUa == null ? 'zero <span class="warn">none</span>' : `zero ${(+c.zeroUa).toFixed(3)} µA${age(c.zeroAt)}`);
+  parts.push(c.gain == null ? 'gain <span class="warn">none</span>' : `gain ${(+c.gain).toFixed(5)}${age(c.gainAt)}`);
+  parts.push(c.eOffsetMv == null ? 'potential <span class="warn">none</span>'
+    : `potential ${(+c.eOffsetMv).toFixed(2)} mV / ${(+c.eGain).toFixed(5)}${age(c.eAt)}`);
+  return long ? parts.join('<br>') : parts.join(' · ');
+}
 
 let state = { user: null, staff: false, boards: [], reports: [], orgs: [], alerts: [], checks: [], qa: [] };
 
@@ -281,6 +299,7 @@ async function openBoard(serial, toQa) {
       <div>Serial</div><div class="mono">${esc(serial)}</div>
       <div>Organisation</div><div>${esc(b.org || '—')}</div>
       <div>Hardware</div><div>${hardware(b)}</div>
+      <div>Calibration</div><div class="mono">${calibration(b, true)}</div>
       <div>Firmware / app</div><div class="mono">${esc(b.fw_version || '?')} / ${esc(b.app_version || '?')}</div>
       <div>Provisioned</div><div>${when(b.provisioned_at)}</div>
       <div>Last seen</div><div>${ago(b.last_seen)}</div>
