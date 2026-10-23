@@ -107,6 +107,18 @@
         "size": 293734,
         "date": "2026-10-22",
         "notes": "1.19.3: the board log records the nRF52840 VBUS detector at boot and on every change. On V1.2 the cell is on VBUS; MSTAT-02 measured 3.75 V threshold (about half charge), the base for the low-battery warning. Measurements unchanged from 1.19.2."
+      },
+      {
+        "version": "1.19.4",
+        "board": "mstat",
+        "hw": [
+          "1.2"
+        ],
+        "url": "https://github.com/tsyurii/mstat-releases/releases/download/fw-mstat-1.19.4/mstat-fw-mstat-1.19.4.zip",
+        "sha256": "6bfe4b7636d33567b01a1072c0c2a266319a94c3980bc793d331a2f10deda672",
+        "size": 293781,
+        "date": "2026-10-23",
+        "notes": "1.19.4: SWV at 50-300 Hz no longer reads low. One stale ADC conversion of the previous half-period landed at the start of every averaging window (100 Hz: -1.3 %, 10 Hz: -0.2 %). Now 100/10 Hz = 0.999 on a resistor. DPV +0.1 %; CA, CV unchanged. Calibrations are kept."
       }
     ],
     "app": {
