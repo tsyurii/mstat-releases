@@ -131,6 +131,18 @@
         "size": 294088,
         "date": "2026-10-23",
         "notes": "SWV/CV/DPV step timing on a hardware step clock: SWV 100 Hz now runs at 100.0 Hz (was 97.0 Hz); 100/10 Hz amplitude ratio 1.001 on 100 kOhm"
+      },
+      {
+        "version": "1.19.6",
+        "board": "mstat",
+        "hw": [
+          "1.2"
+        ],
+        "url": "https://github.com/tsyurii/mstat-releases/releases/download/fw-mstat-1.19.6/mstat-fw-mstat-1.19.6.zip",
+        "sha256": "455ad39b4b193591f251008ce704dc9f413bdeb58429dd38c0e2e27fae0f4d9c",
+        "size": 294121,
+        "date": "2026-10-23",
+        "notes": "Hotfix for 1.19.5: the step clock is stopped after each run, so an idle board draws ~45 uA again (1.19.5: 363 uA after its first run until a reboot)"
       }
     ],
     "app": {
