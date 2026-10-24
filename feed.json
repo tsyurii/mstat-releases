@@ -158,12 +158,12 @@
       }
     ],
     "app": {
-      "version": "1.21.5",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.21.5/mstat-1.21.5.apk",
-      "sha256": "9407cbce7c61f7fe8920a1af5c2eece6c80d867948bf020d63fe8ee027c832e1",
-      "size": 57482239,
-      "date": "2026-10-23",
-      "notes": "1.21.5: each technique keeps its own settings (CA no longer inherits the DPV start, SWV no longer the DPV pulse). A CA batch retries a run that failed to start on a Bluetooth error instead of ending. The CA duration is the data time; equilibration comes on top. Heartbeats send the board calibration to the lab dashboard."
+      "version": "1.21.6",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.21.6/mstat-1.21.6.apk",
+      "sha256": "321337a40c6a5808deb768cfa34a9433e8d99731b6a0e094d35bf7a371f65823",
+      "size": 57515099,
+      "date": "2026-10-24",
+      "notes": "1.21.6: battery estimate for boards with firmware 1.20.0. After a battery change the app asks whether the cell is fully charged (or what the meter reads); the Health card shows the percent; a warning below 25 %, and an explanation when the board refuses a run below 15 %. Runs: a saved run's labels can be corrected (Runs > a run > Correct), the change is kept with the run."
     }
   }
 }
