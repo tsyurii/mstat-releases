@@ -143,6 +143,18 @@
         "size": 294121,
         "date": "2026-10-23",
         "notes": "Hotfix for 1.19.5: the step clock is stopped after each run, so an idle board draws ~45 uA again (1.19.5: 363 uA after its first run until a reboot)"
+      },
+      {
+        "version": "1.20.0",
+        "board": "mstat",
+        "hw": [
+          "1.2"
+        ],
+        "url": "https://github.com/tsyurii/mstat-releases/releases/download/fw-mstat-1.20.0/mstat-fw-mstat-1.20.0.zip",
+        "sha256": "18167829c7f8a015317ab4f396ba6be6ef870c1e478891e558798d80ba7de464",
+        "size": 297829,
+        "date": "2026-10-24",
+        "notes": "1.20.0: battery estimate. The board counts the charge it uses (V1 boards cannot measure their cell) and asks the app after a battery change whether the cell is full; app 1.21.6 shows the percent and warns below 25 %. Below 15 % the board refuses new runs; at 10 % it stops and switches itself off (reconnect the battery after charging). Includes the 1.19.6 idle-current fix and the 1.19.5 step clock."
       }
     ],
     "app": {
