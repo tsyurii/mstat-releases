@@ -170,12 +170,12 @@
       }
     ],
     "app": {
-      "version": "1.21.7",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.21.7/mstat-1.21.7.apk",
-      "sha256": "0c82f58b22dbad14d5f8412c7733bff3cc2aebdf0d677503f40d6bd1fc63dcbe",
+      "version": "1.21.8",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.21.8/mstat-1.21.8.apk",
+      "sha256": "bfad2c449f073b75dec6e0a71486e056e7dff137627bf1d8c1ab073643da5014",
       "size": 57515099,
       "date": "2026-10-25",
-      "notes": "1.21.7: needed before firmware 1.20.1. After an update, and when it finds a board on an unconfirmed image, the app reads the image state, which is what lets firmware 1.20.1 confirm itself (older apps leave it to roll back). Lab dashboard: uploads of runs deleted on the tablet are dropped instead of showing as 'refused'; Send now clears old ones."
+      "notes": "1.21.8: a run saved again (star, note, corrected sample/concentration) updates its lab-dashboard entry instead of being refused, and counts once (needs dashboard migration 011, applied 25 Oct); a correction is filed under the board that measured the run. SWV sampling window shown and written to the CSV as firmware 1.20.2 places it (older boards keep the old description)."
     }
   }
 }
