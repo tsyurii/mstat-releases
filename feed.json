@@ -158,12 +158,12 @@
       }
     ],
     "app": {
-      "version": "1.21.6",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.21.6/mstat-1.21.6.apk",
-      "sha256": "321337a40c6a5808deb768cfa34a9433e8d99731b6a0e094d35bf7a371f65823",
+      "version": "1.21.7",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.21.7/mstat-1.21.7.apk",
+      "sha256": "0c82f58b22dbad14d5f8412c7733bff3cc2aebdf0d677503f40d6bd1fc63dcbe",
       "size": 57515099,
-      "date": "2026-10-24",
-      "notes": "1.21.6: battery estimate for boards with firmware 1.20.0. After a battery change the app asks whether the cell is fully charged (or what the meter reads); the Health card shows the percent; a warning below 25 %, and an explanation when the board refuses a run below 15 %. Runs: a saved run's labels can be corrected (Runs > a run > Correct), the change is kept with the run."
+      "date": "2026-10-25",
+      "notes": "1.21.7: needed before firmware 1.20.1. After an update, and when it finds a board on an unconfirmed image, the app reads the image state, which is what lets firmware 1.20.1 confirm itself (older apps leave it to roll back). Lab dashboard: uploads of runs deleted on the tablet are dropped instead of showing as 'refused'; Send now clears old ones."
     }
   }
 }
