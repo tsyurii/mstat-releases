@@ -184,7 +184,7 @@ function signInView(msg) {
 // ---------------------------------------------------------------- data --
 async function load() {
   const [b, r, s, o, a, qc, ql] = await Promise.all([
-    sb.from('board_status').select('*').order('name'),
+    sb.from('board_status').select('*').order('unit_no', { nullsFirst: false }),
     sb.from('problem_reports').select('*').order('created_at', { ascending: false }).limit(200),
     sb.from('staff').select('user_id').eq('user_id', state.user.id),
     sb.from('orgs').select('id,name,status,share_runs,licence_until').order('name'),
@@ -219,7 +219,7 @@ function render() {
   const attention = new Set(al.map((x) => x.serial)).size;
   const seenWeek = bs.filter((b) => b.last_seen && (Date.now() - new Date(b.last_seen)) < 7 * 864e5).length;
   const name = (id) => state.orgs.find((o) => o.id === id)?.name ?? '';
-  const boardName = (s) => bs.find((b) => b.serial === s)?.name || s || '';
+  const boardName = (s) => { const b = bs.find((x) => x.serial === s); return b ? [b.name, b.unit_no].filter(Boolean).join(' · ') || s : s || ''; };
   $('#app').innerHTML = `
     <div class="stats">
       <div class="stat"><b>${bs.length}</b><span>boards</span></div>
@@ -237,7 +237,7 @@ function render() {
     <div class="card"><h2>Boards <span class="n">${bs.length}</span></h2><div class="scroll"><table>
       <tr><th>Board</th><th>Organisation</th><th>Hardware</th><th>Firmware</th><th>App</th><th>Last seen</th><th>Runs</th><th>Status</th></tr>
       ${bs.map((b) => `<tr class="click" data-serial="${esc(b.serial)}">
-        <td><b>${esc(b.name || '(unnamed)')}</b><br><span class="mono muted">${esc(b.serial)}</span></td>
+        <td><b>${esc(b.name || '(unnamed)')}</b>${b.unit_no ? ` <span class="muted">· ${esc(b.unit_no)}</span>` : ''}<br><span class="mono muted">${esc(b.serial)}</span></td>
         <td>${esc(b.org || '—')}</td><td>${hardware(b)}</td><td class="mono">${esc(b.fw_version || '')}</td>
         <td class="mono">${esc(b.app_version || '')}</td><td>${ago(b.last_seen)}</td>
         <td class="mono">${b.runs ?? ''}</td><td>${flags(b)}</td></tr>`).join('') ||
@@ -293,9 +293,10 @@ async function openBoard(serial, toQa) {
   ]);
   if (error) return alert(error.message);
   const h = ev.find((e) => e.health)?.health || {};
-  $('#dlgTitle').textContent = `${b.name || serial}`;
+  $('#dlgTitle').textContent = [b.name || serial, b.unit_no].filter(Boolean).join(' · ');
   $('#dlgBody').innerHTML = `
     <div class="kv">
+      <div>Unit</div><div class="mono">${esc(b.unit_no || '—')}</div>
       <div>Serial</div><div class="mono">${esc(serial)}</div>
       <div>Organisation</div><div>${esc(b.org || '—')}</div>
       <div>Hardware</div><div>${hardware(b)}</div>
@@ -346,7 +347,7 @@ function qaCard(bs) {
       <tr><th>Board</th>${cs.map((c) => `<th class="c" title="${esc(c.title)} — pass: ${esc(c.pass_rule)}${c.scope === 'design' ? ' (once per hardware/firmware)' : ''}">${esc(c.id)}</th>`).join('')}<th class="c">Passed</th></tr>
       ${bs.map((b) => {
         const n = cs.filter((c) => latest(b.serial, c.id)?.passed === true).length;
-        return `<tr class="click" data-qa="${esc(b.serial)}"><td><b>${esc(b.name || b.serial)}</b></td>
+        return `<tr class="click" data-qa="${esc(b.serial)}"><td><b>${esc(b.name || b.serial)}</b>${b.unit_no ? ` <span class="muted">· ${esc(b.unit_no)}</span>` : ''}</td>
           ${cs.map((c) => `<td class="c">${qaMark(latest(b.serial, c.id))}</td>`).join('')}
           <td class="c mono">${n}/${cs.length}</td></tr>`;
       }).join('')}
