@@ -180,7 +180,8 @@
         "date": "2026-10-29",
         "notes": "Usage licence with terms (runs, end date, monthly renewal) and a clock kept by the server's time; advertising every 2 s (less battery); a supervisor restarts advertising and repairs lost link events; older firmware refused.",
         "serials": [
-          "b1592382ee674955"
+          "b1592382ee674955",
+          "a8a58cd7660be67f"
         ]
       }
     ],
