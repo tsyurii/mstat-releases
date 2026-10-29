@@ -182,12 +182,12 @@
       }
     ],
     "app": {
-      "version": "1.23.3",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.23.3/mstat-1.23.3.apk",
-      "sha256": "be3dbc861490d62ae2385039e08ad4ea6816bcc77c46190ce157c94fbad11e01",
-      "size": 57711771,
+      "version": "1.23.4",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.23.4/mstat-1.23.4.apk",
+      "sha256": "54089e27816004078006765fe7f9feaf49908af43c5d6f7eb236ff65f545875c",
+      "size": 57711767,
       "date": "2026-10-29",
-      "notes": "Uploads with the board's own key (no sign-in needed); folders (projects) for runs and exports; the plot keeps hidden scans and processing through new scans; Compare offers the run just before; usage licence shown on the Device screen with clear messages; firmware updates blocked during a run, and a plain message when a board refuses older firmware."
+      "notes": "Fixed: a collaborator's board connected to a signed-in lab tablet now reports its health (with its own board key, into its own organisation). Includes 1.23.3: no firmware update during a run, a plain message when a board refuses older firmware, Beta shown only to lab staff."
     }
   }
 }
