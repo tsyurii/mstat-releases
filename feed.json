@@ -167,6 +167,21 @@
         "size": 298588,
         "date": "2026-10-25",
         "notes": "1.20.2: SWV reads the last half of each half-period when a mains cycle would start in its first half (above 15 Hz at 60 Hz mains, 12.5 Hz at 50 Hz). At 25 Hz the old window began 3.3 ms after each potential jump and read the charging current: background 10-58 uA and peaks ~22 % high against the PalmSens; now 2.8 uA and within 1 % (MSTAT-02, same drop). 1x oversampling reads at the end of the step. Includes 1.20.1: an updated image confirms itself only after the app reads its image state (needs app >= 1.21.7; with an older app the board returns to the previous firmware on the next reset). Verified on MSTAT-TEST 25 Oct."
+      },
+      {
+        "version": "1.22.2",
+        "board": "mstat",
+        "hw": [
+          "1.2"
+        ],
+        "url": "https://github.com/tsyurii/mstat-releases/releases/download/fw-mstat-1.22.2/mstat-fw-mstat-1.22.2.zip",
+        "sha256": "3680e06dc68fce013397fd99937bc5ed2089e11d08bb0fd1d0dabd68e7612e32",
+        "size": 308800,
+        "date": "2026-10-29",
+        "notes": "Usage licence with terms (runs, end date, monthly renewal) and a clock kept by the server's time; advertising every 2 s (less battery); a supervisor restarts advertising and repairs lost link events; older firmware refused.",
+        "serials": [
+          "b1592382ee674955"
+        ]
       }
     ],
     "app": {
