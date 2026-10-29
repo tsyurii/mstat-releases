@@ -170,12 +170,12 @@
       }
     ],
     "app": {
-      "version": "1.21.8",
-      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.21.8/mstat-1.21.8.apk",
-      "sha256": "bfad2c449f073b75dec6e0a71486e056e7dff137627bf1d8c1ab073643da5014",
-      "size": 57515099,
-      "date": "2026-10-25",
-      "notes": "1.21.8: a run saved again (star, note, corrected sample/concentration) updates its lab-dashboard entry instead of being refused, and counts once (needs dashboard migration 011, applied 25 Oct); a correction is filed under the board that measured the run. SWV sampling window shown and written to the CSV as firmware 1.20.2 places it (older boards keep the old description)."
+      "version": "1.23.3",
+      "url": "https://github.com/tsyurii/mstat-releases/releases/download/app-1.23.3/mstat-1.23.3.apk",
+      "sha256": "be3dbc861490d62ae2385039e08ad4ea6816bcc77c46190ce157c94fbad11e01",
+      "size": 57711771,
+      "date": "2026-10-29",
+      "notes": "Uploads with the board's own key (no sign-in needed); folders (projects) for runs and exports; the plot keeps hidden scans and processing through new scans; Compare offers the run just before; usage licence shown on the Device screen with clear messages; firmware updates blocked during a run, and a plain message when a board refuses older firmware."
     }
   }
 }
