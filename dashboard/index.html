@@ -353,12 +353,14 @@ function terms(l) {
 }
 
 async function licenceSection(serial) {
-  const [{ data: lic }, { data: reqs }] = await Promise.all([
+  const [{ data: lic }, { data: reqs }, { data: plan }] = await Promise.all([
     sb.from('licences').select('lease_id,issued_at,valid_until,budget_runs,features,status')
       .eq('serial', serial).order('issued_at', { ascending: false }).limit(5),
     sb.from('licence_requests').select('id,valid_until,budget_runs,withdraw,status,created_at')
       .eq('serial', serial).eq('status', 'pending'),
+    sb.from('licence_plans').select('active,period_days,ahead_days').eq('serial', serial).maybeSingle(),
   ]);
+  const monthly = plan && plan.active;
   const cur = (lic || []).find((l) => l.status === 'active');
   const el = document.createElement('div');
   el.id = 'licence';
@@ -367,25 +369,42 @@ async function licenceSection(serial) {
       issued ${when(cur.issued_at)}</span>` : '<span class="muted">none filed</span>'}</div>
     <div>Waiting to be signed</div><div>${(reqs || []).length ? (reqs || []).map((r) =>
       esc(r.withdraw ? 'withdraw' : terms({ ...r, features: 1 })) + ` <span class="muted">(${when(r.created_at)})</span>`).join('<br>')
-      + '<br><span class="muted">Sign on the lab Mac: <span class="mono">lease.py pending</span></span>' : '—'}</div></div>
+      + '<br><span class="muted">Sign on the lab Mac: <span class="mono">lease.py pending</span></span>' : '—'}</div>
+    <div>Renews</div><div>${monthly ? `every ${plan.period_days} days, automatically
+      <span class="muted">(signed ${plan.ahead_days} days before the end; firmware ≥ 1.22.2)</span>
+      <button id="licStop" class="ghost">Stop renewing</button>` : '<span class="muted">no</span>'}</div></div>
     <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:8px">
       <select id="licKind"><option value="unlimited">Unlimited</option><option value="runs">Number of runs</option>
-        <option value="until">Until a date</option><option value="both">Runs and date</option><option value="withdraw">Withdraw</option></select>
+        <option value="until">Until a date</option><option value="both">Runs and date</option><option value="monthly">Monthly, renews automatically</option><option value="withdraw">Withdraw</option></select>
       <input id="licRuns" type="number" min="1" placeholder="runs" style="width:110px">
       <input id="licUntil" type="date">
       <button id="licAsk">Ask for this licence</button>
     </div>
     <p class="muted" style="font-size:12px">Reaches the board at its next connection, once signed. The board
-      keeps its data either way; only new measurements need a valid licence.</p>`;
+      keeps its data either way; only new measurements need a valid licence. Monthly: the first month is
+      signed on the lab Mac, then each next month by the renewal job (GitHub Actions) until you stop it;
+      any other choice stops the renewals.</p>`;
   $('#dlgBody').appendChild(el);
   $('#licAsk').onclick = async () => {
     const k = $('#licKind').value;
     const row = { serial, withdraw: k === 'withdraw' };
+    if (k === 'monthly') {
+      const end = new Date(Date.now() + 30 * 86400e3);
+      row.valid_until = new Date(end.toISOString().slice(0, 10) + 'T23:59:59').toISOString();
+    }
     if (k === 'runs' || k === 'both') row.budget_runs = parseInt($('#licRuns').value, 10) || null;
     if (k === 'until' || k === 'both') row.valid_until = $('#licUntil').value ? new Date($('#licUntil').value + 'T23:59:59').toISOString() : null;
     if ((k === 'runs' || k === 'both') && !row.budget_runs) return alert('Give the number of runs.');
     if ((k === 'until' || k === 'both') && !row.valid_until) return alert('Give the end date.');
     const { error } = await sb.from('licence_requests').insert(row);
+    if (error) return alert(error.message);
+    const p = await sb.from('licence_plans').upsert({ serial, active: k === 'monthly', updated_at: new Date().toISOString() });
+    if (p.error) return alert(p.error.message);
+    openBoard(serial);
+  };
+  if ($('#licStop')) $('#licStop').onclick = async () => {
+    if (!confirm('Stop renewing? The licence in force runs to its end date.')) return;
+    const { error } = await sb.from('licence_plans').update({ active: false, updated_at: new Date().toISOString() }).eq('serial', serial);
     if (error) return alert(error.message);
     openBoard(serial);
   };
