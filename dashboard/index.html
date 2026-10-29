@@ -289,7 +289,7 @@ async function openBoard(serial, toQa) {
   const b = state.boards.find((x) => x.serial === serial);
   const [{ data: ev, error }, { data: runs }] = await Promise.all([
     sb.from('board_events').select('*').eq('serial', serial).order('at', { ascending: false }).limit(100),
-    sb.from('runs').select('*').eq('serial', serial).order('started_at', { ascending: false }).limit(50),
+    sb.from('runs').select('id,started_at,technique,local_id,file_path,user_id').eq('serial', serial).order('started_at', { ascending: false }).limit(50),
   ]);
   if (error) return alert(error.message);
   const h = ev.find((e) => e.health)?.health || {};
@@ -320,13 +320,75 @@ async function openBoard(serial, toQa) {
       <tr><th>Started</th><th>Technique</th><th>Run</th><th></th></tr>
       ${runs.map((r) => `<tr><td>${when(r.started_at)}</td><td>${esc(r.technique)}</td>
         <td class="mono">${esc(r.local_id)}</td>
-        <td>${r.file_path ? `<button class="ghost" data-zip="${esc(r.file_path)}">Download</button>` : ''}</td></tr>`).join('')}
+        <td>${r.file_path ? `<button class="ghost" data-zip="${esc(r.file_path)}">Download</button>`
+          : `<button class="ghost" data-run="${esc(r.id)}" data-name="${esc(r.local_id)}">Download (JSON)</button>`}</td></tr>`).join('')}
     </table></div>` : ''}`;
   $('#dlgBody').querySelectorAll('button[data-zip]').forEach((btn) => btn.onclick = () => download(btn.dataset.zip));
+  // Runs sent with the board key keep their data in the database (migration 014).
+  $('#dlgBody').querySelectorAll('button[data-run]').forEach((btn) => btn.onclick = async () => {
+    const { data, error } = await sb.rpc('staff_run_data', { p_id: btn.dataset.run });
+    if (error) return alert(error.message);
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], { type: 'application/json' }));
+    a.download = `${btn.dataset.name}.mstatrun.json`; a.click();
+  });
+  await licenceSection(serial);
   if (state.checks.length) await qaSection(b, serial);
   if ($('#dlg').open) $('#dlg').close();
   $('#dlg').showModal();
   if (toQa) $('#qa')?.scrollIntoView();
+}
+
+// ------------------------------------------------------------- licence --
+// The board's usage licence (migrations 013, 015). Changes are asked for here
+// and signed on the lab Mac (src/tools/lease/lease.py pending); the board's app
+// delivers the signed licence at its next connection (firmware >= 1.22.0).
+function terms(l) {
+  if (!l) return '—';
+  if (!(l.features & 1)) return 'withdrawn';
+  const t = [];
+  if (l.budget_runs) t.push(`${l.budget_runs} runs`);
+  if (l.valid_until) t.push(`until ${new Date(l.valid_until).toLocaleDateString()}`);
+  return t.join(', ') || 'unlimited';
+}
+
+async function licenceSection(serial) {
+  const [{ data: lic }, { data: reqs }] = await Promise.all([
+    sb.from('licences').select('lease_id,issued_at,valid_until,budget_runs,features,status')
+      .eq('serial', serial).order('issued_at', { ascending: false }).limit(5),
+    sb.from('licence_requests').select('id,valid_until,budget_runs,withdraw,status,created_at')
+      .eq('serial', serial).eq('status', 'pending'),
+  ]);
+  const cur = (lic || []).find((l) => l.status === 'active');
+  const el = document.createElement('div');
+  el.id = 'licence';
+  el.innerHTML = `<h3 style="font-size:14px">Licence</h3>
+    <div class="kv"><div>In force</div><div>${cur ? `${esc(terms(cur))} <span class="muted mono">#${cur.lease_id},
+      issued ${when(cur.issued_at)}</span>` : '<span class="muted">none filed</span>'}</div>
+    <div>Waiting to be signed</div><div>${(reqs || []).length ? (reqs || []).map((r) =>
+      esc(r.withdraw ? 'withdraw' : terms({ ...r, features: 1 })) + ` <span class="muted">(${when(r.created_at)})</span>`).join('<br>')
+      + '<br><span class="muted">Sign on the lab Mac: <span class="mono">lease.py pending</span></span>' : '—'}</div></div>
+    <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:8px">
+      <select id="licKind"><option value="unlimited">Unlimited</option><option value="runs">Number of runs</option>
+        <option value="until">Until a date</option><option value="both">Runs and date</option><option value="withdraw">Withdraw</option></select>
+      <input id="licRuns" type="number" min="1" placeholder="runs" style="width:110px">
+      <input id="licUntil" type="date">
+      <button id="licAsk">Ask for this licence</button>
+    </div>
+    <p class="muted" style="font-size:12px">Reaches the board at its next connection, once signed. The board
+      keeps its data either way; only new measurements need a valid licence.</p>`;
+  $('#dlgBody').appendChild(el);
+  $('#licAsk').onclick = async () => {
+    const k = $('#licKind').value;
+    const row = { serial, withdraw: k === 'withdraw' };
+    if (k === 'runs' || k === 'both') row.budget_runs = parseInt($('#licRuns').value, 10) || null;
+    if (k === 'until' || k === 'both') row.valid_until = $('#licUntil').value ? new Date($('#licUntil').value + 'T23:59:59').toISOString() : null;
+    if ((k === 'runs' || k === 'both') && !row.budget_runs) return alert('Give the number of runs.');
+    if ((k === 'until' || k === 'both') && !row.valid_until) return alert('Give the end date.');
+    const { error } = await sb.from('licence_requests').insert(row);
+    if (error) return alert(error.message);
+    openBoard(serial);
+  };
 }
 
 // ------------------------------------------------------------------ QA --
